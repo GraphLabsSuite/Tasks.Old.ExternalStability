@@ -4,13 +4,14 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
+using GraphLabs.CommonUI;
 using GraphLabs.CommonUI.Controls.ViewModels;
 using GraphLabs.Graphs.UIComponents.Visualization;
 
 namespace GraphLabs.Tasks.ExternalStability
 {
     /// <summary> Поиск компонент сильной связности, построение конденсата </summary>
-    public partial class ExternalStability : UserControl
+    public partial class ExternalStability : TaskViewBase
     {
         #region Команды
 

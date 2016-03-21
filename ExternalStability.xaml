@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="GraphLabs.Tasks.ExternalStability.ExternalStability"
+﻿<commonUi:TaskViewBase x:Class="GraphLabs.Tasks.ExternalStability.ExternalStability"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -8,6 +8,7 @@
              xmlns:converters="clr-namespace:GraphLabs.CommonUI.Helpers.Converters;assembly=GraphLabs.CommonUI"
              xmlns:controls1="clr-namespace:GraphLabs.CommonUI.Controls;assembly=GraphLabs.CommonUI"
              xmlns:visualization1="clr-namespace:GraphLabs.Graphs.UIComponents.Visualization;assembly=GraphLabs.Graphs.UIComponents"
+             xmlns:commonUi="clr-namespace:GraphLabs.CommonUI;assembly=GraphLabs.CommonUI"
              mc:Ignorable="d"
              d:DesignHeight="400" 
              d:DesignWidth="785"
@@ -125,4 +126,4 @@
             </controls1:InformationBar>
         </Grid>
     </toolkit:BusyIndicator>
-</UserControl>
+</commonUi:TaskViewBase>

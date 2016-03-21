@@ -9,7 +9,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
-using Castle.Core.Internal;
 using GraphLabs.Common;
 using GraphLabs.Common.UserActionsRegistrator;
 using GraphLabs.CommonUI;
@@ -22,12 +21,11 @@ using GraphLabs.Utils.Services;
 
 namespace GraphLabs.Tasks.ExternalStability
 {
-    /// <summary> ViewModel для TaskTemplate </summary>
-    public partial class  ExternalStabilityViewModel : DependencyObject
-    {
+    /// <summary> ViewModel для ExternalStability </summary>
+    public partial class  ExternalStabilityViewModel : TaskViewModelBase<ExternalStability>
 
         /// <summary> Текущее состояние </summary>
-        private enum State
+    private enum State
         {
             /// <summary> Пусто </summary>
             Nothing,
