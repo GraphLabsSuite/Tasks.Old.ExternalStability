@@ -13,17 +13,18 @@ using GraphLabs.Common;
 using GraphLabs.Common.UserActionsRegistrator;
 using GraphLabs.CommonUI;
 using GraphLabs.CommonUI.Controls.ViewModels;
+using GraphLabs.Common.TasksDataService;
 using GraphLabs.Graphs;
 using GraphLabs.Graphs.DataTransferObjects.Converters;
 using GraphLabs.Utils;
 using GraphLabs.Utils.Services;
-
+using GraphLabs.Common.Utils;
 
 namespace GraphLabs.Tasks.ExternalStability
 {
     /// <summary> ViewModel для ExternalStability </summary>
     public partial class  ExternalStabilityViewModel : TaskViewModelBase<ExternalStability>
-
+    { 
         /// <summary> Текущее состояние </summary>
     private enum State
         {
@@ -59,10 +60,10 @@ namespace GraphLabs.Tasks.ExternalStability
         private readonly VariantProvider _variantProvider;
 
         /// <summary> ID текущего задания </summary>
-        private readonly long _taskId;
+        ///private readonly long _taskId;
 
         /// <summary> Guid текущей сессии </summary>
-        private readonly Guid _sessionGuid;
+        ///private readonly Guid _sessionGuid;
 
         /// <summary> Допустимые версии генератора, с помощью которого сгенерирован вариант </summary>
         private readonly Version[] _allowedGeneratorVersions = new[] {  new Version(1, 0) };
@@ -70,7 +71,7 @@ namespace GraphLabs.Tasks.ExternalStability
 
         private readonly Color defaultBorderColor     = Color.FromArgb(255, 50, 133, 144);
         private readonly Color defaultBackgroundColor = Color.FromArgb(250, 207, 207, 207);
-
+       
 
         #region Public свойства вьюмодели
 
@@ -239,56 +240,67 @@ namespace GraphLabs.Tasks.ExternalStability
             get { return (IList<SccRowViewModel>)GetValue(SccRowsProperty); }
             set { SetValue(SccRowsProperty, value); }
         }
-    #endregion
+        #endregion
 
+       
 
-        /// <summary> Ctor. </summary>
-        public ExternalStabilityViewModel(long taskId, Guid sessionGuid, 
-            DisposableWcfClientWrapper<ITasksDataServiceClient> dataServiceClient,
-            DisposableWcfClientWrapper<IUserActionsRegistratorClient> actionsRegistratorClient,
-            IDateTimeService dateTimeService)
+        /// <summary> Допустимые версии генератора </summary>
+        protected override Version[] AllowedGeneratorVersions
         {
-            _taskId = taskId;
-            _sessionGuid = sessionGuid;
+            get { return _allowedGeneratorVersions; }
+        }
 
-            SetDES = new ObservableCollection<IVertex>();
+        /// <summary> Инициализация </summary>
+        protected override void OnInitialized()
+        {
+            base.OnInitialized();
 
-            _variantProvider = new VariantProvider(_taskId, _sessionGuid, _allowedGeneratorVersions, dataServiceClient);
-            _variantProvider.VariantDownloaded += TaskLoadingComplete;
-            _variantProvider.PropertyChanged += (sender, args) => HandlePropertyChanged(args);
-
-            UserActionsManager = new UserActionsManager(_taskId, _sessionGuid, actionsRegistratorClient, dateTimeService);
             UserActionsManager.PropertyChanged += (sender, args) => HandlePropertyChanged(args);
-            UserActionsManager.SendReportOnEveryAction = true; // mock очень не хочется настраивать нормально, в боевом режиме можно выключить.
-
+            VariantProvider.PropertyChanged += (sender, args) => HandlePropertyChanged(args);
             InitToolBarCommands();
+            SubscribeToViewEvents();
+        }
 
-            SccRows = new ObservableCollection<SccRowViewModel>();
+        private void SubscribeToViewEvents()
+        {
+            View.VertexClicked += (sender, args) => OnVertexClick(args.Control);
+            View.Loaded += (sender, args) => StartVariantDownload();
+        }
 
-            OnLoadedCmd = new DelegateCommand(o => _variantProvider.DownloadVariantAsync(), o => true);
-            VertexClickCmd = new DelegateCommand(
-                o =>
-                {
-                    UserActionsManager.RegisterInfo(string.Format("Клик по вершине [{0}]", ((IVertex) o).Name));
-                    for (int i = 0; i < VertVisCol.Count; ++i)
-                    {
-                        //VertVisCol[i].Background = new SolidColorBrush(Colors.Magenta); 
-                    }
-                }, 
-                o => true);
+        /// <summary> Начать загрузку варианта </summary>
+        public void StartVariantDownload()
+        {
+            VariantProvider.DownloadVariantAsync();
+        }
+
+        /// <summary> Клик по вершине </summary>
+        public void OnVertexClick(IVertex vertex)
+        {
+            UserActionsManager.RegisterInfo(string.Format("Клик по вершине [{0}]", vertex.Name));
         }
 
         private void HandlePropertyChanged(PropertyChangedEventArgs args)
         {
             if (args.PropertyName == ExpressionUtility.NameForMember((IUiBlockerAsyncProcessor p) => p.IsBusy))
-                RecalculateIsLoadingData();
+            {
+                // Нас могли дёрнуть из другого потока, поэтому доступ к UI - через Dispatcher.
+                Dispatcher.BeginInvoke(RecalculateIsLoadingData);
+            }
         }
 
         private void RecalculateIsLoadingData()
         {
-            IsLoadingData = _variantProvider.IsBusy || UserActionsManager.IsBusy;
+            IsLoadingData = VariantProvider.IsBusy || UserActionsManager.IsBusy;
         }
 
+        /// <summary> Задание загружено </summary>
+        /// <param name="e"></param>
+        protected override void OnTaskLoadingComlete(VariantDownloadedEventArgs e)
+        {
+            // Мы вызваны из другого потока. Поэтому работаем с UI-элементами через Dispatcher.
+            Dispatcher.BeginInvoke(() => { GivenGraph = GraphSerializer.Deserialize(e.Data); });
+        }
+        
         private ObservableCollection<string> _changedCollection;
         private NotifyCollectionChangedEventArgs _cellChangedArgs;
         private void RowChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -315,9 +327,6 @@ namespace GraphLabs.Tasks.ExternalStability
                 row.CollectionChanged += RowChanged;
                 Matrix.Add(new MatrixRowViewModel<string>(row));
             }
-            
-            //var number = e.Number; -- м.б. тоже где-то показать надо
-            //var version = e.Version;
         }
        
         

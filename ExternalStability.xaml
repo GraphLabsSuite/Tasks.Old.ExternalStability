@@ -93,17 +93,33 @@
             />
             <!-- Панель инструментов -->
             <controls1:ToolBar Name="ToolBar"
-                              Grid.Column="2"
-                              Grid.Row="3"
-                              Orientation="Horizontal"
-     
-                              Background="#507380"
+                              Grid.Column="1"
+                              Grid.Row="1"
+                              Grid.RowSpan="1"
+                              VerticalAlignment="Stretch"
+                              Background="SlateGray"
                               Commands="{Binding ToolBarCommands}" />
 
+            <!-- Исходный граф -->
+            <visualization1:GraphVisualizer
+                                       Grid.Column="2" 
+                                       Grid.Row="1"
+                                       Background="{Binding Background, ElementName=LayoutRoot}"
+                                       
+                                       VisualizationAlgorithm="Circle"
+                                       Graph="{Binding GivenGraph}"
+                                       VertexClick="OnVertexClick"
+                                       DefaultVertexRadius="20"
+                                       IsAnimationSuspended="{Binding IsBusy, 
+                                           ElementName=BusyIndicator, 
+                                           Converter={StaticResource NegateConverter}}"
+                                       MinHeight="100"
+                                       MinWidth="100"/>
+
+     
 
 
-                
-                    <sdk:DataGrid Grid.Row="6" 
+                <sdk:DataGrid Grid.Row="6" 
                               Grid.Column="2"
                               Name="SccList"
                               ItemsSource="{Binding SccRows}" 

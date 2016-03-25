@@ -30,6 +30,7 @@ namespace GraphLabs.Tasks.ExternalStability
         private void InitToolBarCommands()
         {
             ToolBarCommands = new ObservableCollection<ToolBarCommandBase>();
+
             // Выбор множества External stability
             var selectDESCommand = new ToolBarToggleCommand(
                 () =>

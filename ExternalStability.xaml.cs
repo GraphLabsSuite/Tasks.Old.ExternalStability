@@ -56,28 +56,28 @@ namespace GraphLabs.Tasks.ExternalStability
             set { SetValue(VertVisProperty, value); }
         }
 
-        /// <summary> ребра из визуализатора </summary>
+        /// <summary> Рёбра из визуализатора </summary>
         public static DependencyProperty EdgeVisProperty =
             DependencyProperty.Register("EdgeVis", 
                                         typeof(ReadOnlyCollection<Edge>), 
                                         typeof(ExternalStability), 
                                         new PropertyMetadata(default(ReadOnlyCollection<Edge>)));
 
-        /// <summary> ребра из визуализатора </summary>
+        /// <summary> Рёбра из визуализатора </summary>
         public ReadOnlyCollection<Edge> EdgeVis
         {
             get { return (ReadOnlyCollection<Edge>)GetValue(EdgeVisProperty); }
             set { SetValue(EdgeVisProperty, value); }
         }
 
-        /// <summary> ребра из визуализатора </summary>
+        /// <summary> Рёбра из визуализатора </summary>
         public static DependencyProperty MatrixVisProperty =
             DependencyProperty.Register("MatrixVis",
                                         typeof(ReadOnlyCollection<MatrixRowViewModel<string>>),
                                         typeof(ExternalStability),
                                         new PropertyMetadata(default(ReadOnlyCollection<MatrixRowViewModel<string>>)));
 
-        /// <summary> ребра из визуализатора </summary>
+        /// <summary> Рёбра из визуализатора </summary>
         public ReadOnlyCollection<MatrixRowViewModel<string>> MatrixVis
         {
             get { return (ReadOnlyCollection<MatrixRowViewModel<string>>) GetValue(MatrixVisProperty); }
@@ -97,13 +97,22 @@ namespace GraphLabs.Tasks.ExternalStability
             
         }
 
+
+        /// <summary> Клик по вершине </summary>
+        public event EventHandler<VertexClickEventArgs> VertexClicked;
+
+        private void OnVertexClicked(VertexClickEventArgs e)
+        {
+            var handler = VertexClicked;
+            if (handler != null)
+            {
+                handler(this, e);
+            }
+        }
+
         private void OnVertexClick(object sender, VertexClickEventArgs e)
         {
-            if (VertexClickCommand != null)
-            {
-                VertexClickCommand.Execute(e.Vertex);
-            }
-            VertVis = Visualizer.Vertices;
+            OnVertexClicked(e);
         }
 
         private void OnLoaded(object sender, RoutedEventArgs e)
@@ -111,17 +120,13 @@ namespace GraphLabs.Tasks.ExternalStability
             if (OnLoadedCommand != null)
             {
                 OnLoadedCommand.Execute(null);
-                
+
             }
             VertVis = Visualizer.Vertices;
             EdgeVis = Visualizer.Edges;
-            
+
         }
 
 
-        private void Matrix_OnCellEdited(object sender, EventArgs e)
-        {
-            
-        }
     }
 }

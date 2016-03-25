@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
-using System.Windows.Controls;
 using GraphLabs.CommonUI;
 using GraphLabs.CommonUI.Configuration;
 using GraphLabs.Tasks.ExternalStability.Configuration;
+
 
 namespace GraphLabs.Tasks.ExternalStability
 {
