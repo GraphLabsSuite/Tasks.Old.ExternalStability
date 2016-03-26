@@ -88,7 +88,6 @@
                               Grid.Column="2"
                               Grid.Row="1"
                               BorderBrush="BlueViolet"
-                              CellEdited="Matrix_OnCellEdited"
                               DataSource="{Binding Matrix}"
             />
             <!-- Панель инструментов -->

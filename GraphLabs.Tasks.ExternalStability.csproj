@@ -109,32 +109,32 @@
     <Reference Include="Castle.Core">
       <HintPath>externals\GraphLabs.Core\Castle.Core.dll</HintPath>
     </Reference>
-    <Reference Include="GraphLabs.Common, Version=1.4.174.19531, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>packages\GraphLabs.Common.1.4.0\lib\portable-net45+sl50+win+wp80\GraphLabs.Common.dll</HintPath>
+    <Reference Include="GraphLabs.Common, Version=1.4.2.181, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\GraphLabs.Common.1.4.2\lib\portable-net45+sl50+win+wp80\GraphLabs.Common.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="GraphLabs.Common.Utils, Version=1.1.1.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>packages\GraphLabs.Common.Utils.1.1.1\lib\portable-net45+sl50+win+wpa81+wp80\GraphLabs.Common.Utils.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="GraphLabs.CommonUI, Version=1.4.174.19536, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>packages\GraphLabs.CommonUI.1.4.0\lib\sl50\GraphLabs.CommonUI.dll</HintPath>
+    <Reference Include="GraphLabs.CommonUI, Version=1.4.2.181, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\GraphLabs.CommonUI.1.4.2\lib\sl50\GraphLabs.CommonUI.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="GraphLabs.Graphs, Version=1.4.174.19534, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>packages\GraphLabs.Graphs.1.4.0\lib\portable-net45+sl50+win+wp80\GraphLabs.Graphs.dll</HintPath>
+    <Reference Include="GraphLabs.Graphs, Version=1.4.2.181, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\GraphLabs.Graphs.1.4.2\lib\portable-net45+sl50+win+wp80\GraphLabs.Graphs.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="GraphLabs.Graphs.UIComponents, Version=1.4.174.19538, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>packages\GraphLabs.Graphs.UIComponents.1.4.0\lib\sl50\GraphLabs.Graphs.UIComponents.dll</HintPath>
+    <Reference Include="GraphLabs.Graphs.UIComponents, Version=1.4.2.181, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\GraphLabs.Graphs.UIComponents.1.4.2\lib\sl50\GraphLabs.Graphs.UIComponents.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="GraphLabs.Tasks.Contract, Version=1.1.1.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>packages\GraphLabs.Tasks.Contract.1.1.1\lib\portable-net45+sl50+win+wpa81+wp80\GraphLabs.Tasks.Contract.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="GraphLabs.Utils, Version=1.4.174.19531, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>packages\GraphLabs.Utils.1.4.0\lib\portable-net45+sl50+win+wp80\GraphLabs.Utils.dll</HintPath>
+    <Reference Include="GraphLabs.Utils, Version=1.4.2.181, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\GraphLabs.Utils.1.4.2\lib\portable-net45+sl50+win+wp80\GraphLabs.Utils.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Moq.Silverlight">
@@ -196,7 +196,7 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Confguration\MockedWcfServicesConfigurator.cs" />
+    <Compile Include="Configuration\MockedWcfServicesConfigurator.cs" />
     <Compile Include="SccRowViewModel.cs" />
     <Compile Include="SccRowViewModel_2.cs" />
     <Compile Include="ExternalStabilityViewModel.ToolBarCommands.cs" />
