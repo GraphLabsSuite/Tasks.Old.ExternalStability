@@ -75,20 +75,6 @@ namespace GraphLabs.Tasks.ExternalStability
 
         #region Public свойства вьюмодели
 
-        /// <summary> Регистратор действий студента </summary>
-        public static readonly DependencyProperty UserActionsManagerProperty = DependencyProperty.Register(
-            "UserActionsManager", 
-            typeof(UserActionsManager), 
-            typeof(ExternalStabilityViewModel), 
-            new PropertyMetadata(default(UserActionsManager)));
-
-        /// <summary> Регистратор действий студента </summary>
-        public UserActionsManager UserActionsManager
-        {
-            get { return (UserActionsManager)GetValue(UserActionsManagerProperty); }
-            set { SetValue(UserActionsManagerProperty, value); }
-        }
-
         /// <summary> Идёт загрузка данных? </summary>
         public static readonly DependencyProperty IsLoadingDataProperty = DependencyProperty.Register(
             "IsLoadingData", 
@@ -242,7 +228,7 @@ namespace GraphLabs.Tasks.ExternalStability
         }
         #endregion
 
-       
+    
 
         /// <summary> Допустимые версии генератора </summary>
         protected override Version[] AllowedGeneratorVersions
