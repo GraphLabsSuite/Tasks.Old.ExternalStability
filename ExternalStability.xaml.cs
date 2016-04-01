@@ -127,6 +127,10 @@ namespace GraphLabs.Tasks.ExternalStability
 
         }
 
+        private void GraphVisualizer_Loaded()
+        {
+
+        }
 
     }
 }
