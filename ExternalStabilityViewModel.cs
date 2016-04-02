@@ -90,8 +90,9 @@ namespace GraphLabs.Tasks.ExternalStability
         }
 
         /// <summary> Разрешено перемещение вершин? </summary>
-        public static readonly DependencyProperty IsMouseVerticesMovingEnabledProperty = DependencyProperty.Register(
-            "IsMouseVerticesMovingEnabled", 
+        public static readonly DependencyProperty IsMouseVerticesMovingEnabledProperty = 
+            DependencyProperty.Register(
+            nameof(IsMouseVerticesMovingEnabled),
             typeof(bool), 
             typeof(ExternalStabilityViewModel),
             new PropertyMetadata(false));
