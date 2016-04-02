@@ -13,7 +13,6 @@ using GraphLabs.Common;
 using GraphLabs.Common.UserActionsRegistrator;
 using GraphLabs.CommonUI;
 using GraphLabs.CommonUI.Controls.ViewModels;
-using GraphLabs.Common.TasksDataService;
 using GraphLabs.Graphs;
 using GraphLabs.Graphs.DataTransferObjects.Converters;
 using GraphLabs.Utils;
