@@ -257,6 +257,7 @@ namespace GraphLabs.Tasks.ExternalStability
         public void StartVariantDownload()
         {
             VariantProvider.DownloadVariantAsync();
+            //OnTaskLoadingComlete(e);
         }
 
         /// <summary> Клик по вершине </summary>
@@ -284,7 +285,24 @@ namespace GraphLabs.Tasks.ExternalStability
         protected override void OnTaskLoadingComlete(VariantDownloadedEventArgs e)
         {
             // Мы вызваны из другого потока. Поэтому работаем с UI-элементами через Dispatcher.
-            Dispatcher.BeginInvoke(() => { GivenGraph = GraphSerializer.Deserialize(e.Data); });
+            Dispatcher.BeginInvoke(() => {
+            GivenGraph = GraphSerializer.Deserialize(e.Data);
+                IsMouseVerticesMovingEnabled = true;
+
+                _task = Task.t11;
+
+                Matrix = new ObservableCollection<MatrixRowViewModel<string>>();
+                for (var i = 0; i < GivenGraph.VerticesCount; ++i)
+                {
+                    var row = new ObservableCollection<string> { i.ToString() };
+                    for (var j = 0; j < GivenGraph.VerticesCount; ++j)
+                        row.Add("0");
+
+                    row.CollectionChanged += RowChanged;
+                    Matrix.Add(new MatrixRowViewModel<string>(row));
+                }
+
+           });
         }
         
         private ObservableCollection<string> _changedCollection;
@@ -295,25 +313,6 @@ namespace GraphLabs.Tasks.ExternalStability
                 _changedCollection = (ObservableCollection<string>)sender;
             }
 
-        private void TaskLoadingComplete(object sender, VariantDownloadedEventArgs e)
-        {
-
-            GivenGraph = GraphSerializer.Deserialize(e.Data);
-            IsMouseVerticesMovingEnabled = true;
-
-            _task = Task.t11;
-
-            Matrix = new ObservableCollection<MatrixRowViewModel<string>>();
-            for (var i = 0; i < GivenGraph.VerticesCount; ++i)
-            {
-                var row = new ObservableCollection<string> { i.ToString() };
-                for (var j = 0; j < GivenGraph.VerticesCount; ++j)
-                    row.Add("0");
-                
-                row.CollectionChanged += RowChanged;
-                Matrix.Add(new MatrixRowViewModel<string>(row));
-            }
-        }
        
         
         /// <summary> Проверка матрицы </summary>

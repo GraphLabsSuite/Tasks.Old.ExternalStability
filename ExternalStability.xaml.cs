@@ -100,6 +100,7 @@ namespace GraphLabs.Tasks.ExternalStability
 
         /// <summary> Клик по вершине </summary>
         public event EventHandler<VertexClickEventArgs> VertexClicked;
+        
 
         private void OnVertexClicked(VertexClickEventArgs e)
         {
@@ -132,5 +133,9 @@ namespace GraphLabs.Tasks.ExternalStability
 
         }
 
+        private void Matrix_Loaded(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }
