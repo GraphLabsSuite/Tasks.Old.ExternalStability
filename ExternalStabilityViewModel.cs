@@ -291,7 +291,7 @@ namespace GraphLabs.Tasks.ExternalStability
 
                 _task = Task.t11;
 
-                Matrix = new ObservableCollection<MatrixRowViewModel<string>>();
+                var matrix = new ObservableCollection<MatrixRowViewModel<string>>();
                 for (var i = 0; i < GivenGraph.VerticesCount; ++i)
                 {
                     var row = new ObservableCollection<string> { i.ToString() };
@@ -299,10 +299,10 @@ namespace GraphLabs.Tasks.ExternalStability
                         row.Add("0");
 
                     row.CollectionChanged += RowChanged;
-                    Matrix.Add(new MatrixRowViewModel<string>(row));
+                    matrix.Add(new MatrixRowViewModel<string>(row));
                 }
-
-           });
+                Matrix = matrix;
+            });
         }
         
         private ObservableCollection<string> _changedCollection;
