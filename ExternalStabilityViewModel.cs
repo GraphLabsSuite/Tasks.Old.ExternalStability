@@ -318,7 +318,7 @@ namespace GraphLabs.Tasks.ExternalStability
         /// <summary> Проверка матрицы </summary>
         public void checkMatrix()
         {
-            int counter = countOfErrorsMatrix(Matrix);
+            int counter = CountOfErrorsMatrix(Matrix);
             if (counter > 0)
             {
                 short k = (short) ((short) counter * 3);
@@ -351,7 +351,7 @@ namespace GraphLabs.Tasks.ExternalStability
 
         public void checkMatrixforAghorithm()
         {
-            int counter = countOfErrorsMatrixforAlgorithm(Matrix);
+            int counter = CountOfErrorsMatrixforAlgorithm(Matrix);
 
             if (counter > 0)
             {
@@ -434,33 +434,29 @@ namespace GraphLabs.Tasks.ExternalStability
         }
 
 
-        
-        private int countOfErrorsMatrix(ObservableCollection<MatrixRowViewModel<string>> m)
+
+        private int CountOfErrorsMatrix(ObservableCollection<MatrixRowViewModel<string>> m)
         {
-            int counter = 0;
+            var counter = 0;
 
-            for (int i = 0; i < GivenGraph.VerticesCount; i++)
-            {
-                for (int j = 0; j < GivenGraph.VerticesCount; j++)
+            for (var i = 0; i < GivenGraph.VerticesCount; i++)
+                for (var j = 0; j < GivenGraph.VerticesCount; j++)
                 {
-                    var temp = GivenGraph[GivenGraph.Vertices[i], GivenGraph.Vertices[j]];
+                    var studentInput = (m[i][j + 1] ?? "").Trim();
+                    var directEdge = GivenGraph[GivenGraph.Vertices[i], GivenGraph.Vertices[j]];
 
-                    if ((m[i][j + 1] == "1") && (temp == null && GivenGraph[GivenGraph.Vertices[j], GivenGraph.Vertices[i]] ==null))
+                    if (directEdge != null && studentInput != "1"
+                        ||
+                        directEdge == null && studentInput == "1")
                     {
                         counter++;
                     }
-                    if ((m[i][j + 1] != "1") && (GivenGraph[GivenGraph.Vertices[i], GivenGraph.Vertices[j]] != null || GivenGraph[GivenGraph.Vertices[j], GivenGraph.Vertices[i]] != null))
-                    {
-                        counter++; 
-                    }
-                    
                 }
-            }
 
             return counter;
-         }
+        }
 
-        private int countOfErrorsMatrixforAlgorithm(ObservableCollection<MatrixRowViewModel<string>> m)
+        private int CountOfErrorsMatrixforAlgorithm(ObservableCollection<MatrixRowViewModel<string>> m)
         {
             int counter = 0;
 
