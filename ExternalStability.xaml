@@ -123,9 +123,9 @@
                               AutoGenerateColumns="False" 
                               AlternatingRowBackground="#FFE8E8E8" Grid.ColumnSpan="2">
                 <sdk:DataGrid.Columns>
-                    <sdk:DataGridTextColumn Header="№" Binding="{Binding Path=SccRows Number}" Width="40" IsReadOnly="true" />
-                    <sdk:DataGridCheckBoxColumn Header="Статус" Binding="{Binding Path=SccRows IsBuilt}" Width="40" IsReadOnly="false"/>
-                    <sdk:DataGridTextColumn Header="Множества внешней устойчивости" Binding="{Binding Path=SccRows VerticesSet}" Width="1*" IsReadOnly="true"/>
+                    <sdk:DataGridTextColumn Header="№" Binding="{Binding Path=Number}" Width="40" IsReadOnly="true" />
+                    <sdk:DataGridCheckBoxColumn Header="Статус" Binding="{Binding Path=IsBuilt}" Width="40" IsReadOnly="false"/>
+                    <sdk:DataGridTextColumn Header="Множества внешней устойчивости" Binding="{Binding Path=VerticesSet}" Width="1*" IsReadOnly="true"/>
                 </sdk:DataGrid.Columns>
             </sdk:DataGrid>
 
@@ -134,7 +134,7 @@
                                       DataContext="{Binding UserActionsManager}">
 
             </controls1:InformationBar>
-            
+
         </Grid>
     </toolkit:BusyIndicator>
 </commonUi:TaskViewBase>
