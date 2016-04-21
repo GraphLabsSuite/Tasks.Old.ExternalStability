@@ -37,17 +37,16 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="210" />
                 <RowDefinition Height="60" />
-                <RowDefinition Height="25" />
                 <RowDefinition Height="1*"/>
                 <RowDefinition Height="50" />
             </Grid.RowDefinitions>
 
             <Border BorderThickness="5" 
-                    Name="LeftMainBorder" 
+                    Name="MainBorder" 
                     Grid.Column="0" 
                     Grid.Row="0" 
                     Grid.ColumnSpan="2" 
-                    Grid.RowSpan="5" Margin="0,0,0,0">
+                    Grid.RowSpan="4" Margin="0,0,0,0">
                 <Border.BorderBrush>
                     <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                         <GradientStop Color="#FFA3AEB9" Offset="0" />
@@ -58,6 +57,21 @@
                 </Border.BorderBrush>
             </Border>
 
+            <Border BorderThickness="5" 
+                    Name="RightMainBorder" 
+                    Grid.Column="1" 
+                    Grid.Row="0" 
+                    Grid.RowSpan="3" Margin="0,0,0,0">
+                <Border.BorderBrush>
+                    <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                        <GradientStop Color="#FFA3AEB9" Offset="0" />
+                        <GradientStop Color="#FF617584" Offset="1" />
+                        <GradientStop Color="#FF718597" Offset="0.273" />
+                        <GradientStop Color="#FF8399A9" Offset="0.244" />
+                    </LinearGradientBrush>
+                </Border.BorderBrush>
+            </Border>
+            
             <!-- Исходный граф -->
             <visualization1:GraphVisualizer x:Name="Visualizer" 
                                        Grid.Column="0" 
@@ -87,7 +101,7 @@
                               Grid.Row="0"
                               BorderBrush="BlueViolet"
                               Margin="0,5,5,0"
-                              DataSource="{Binding Matrix}" Grid.ColumnSpan="2" Loaded="Matrix_Loaded"
+                              DataSource="{Binding Matrix}" Grid.ColumnSpan="2"
             />
 
             <!-- Панель инструментов -->
@@ -97,23 +111,21 @@
                               VerticalAlignment="Stretch"
                               Orientation="Horizontal"
                               Background="SlateGray"
-                               Margin="0,0,0,0"
+                              Margin="0,0,0,0"
                               Commands="{Binding ToolBarCommands}" />
-
+            
+            <!-- Выбранные множества внешней устойчивости -->
             <sdk:DataGrid Grid.Row="2" 
                               Grid.Column="1"
-                              Name="SccList"
-                          Margin="0,0,5,0"
+                              Name ="SccList"
+                              Margin="5,0,5,0"
                               ItemsSource="{Binding SccRows}" 
                               AutoGenerateColumns="False" 
                               AlternatingRowBackground="#FFE8E8E8" Grid.ColumnSpan="2">
-                <sdk:DataGrid.Resources>
-
-                </sdk:DataGrid.Resources>
                 <sdk:DataGrid.Columns>
-                    <sdk:DataGridTextColumn Header="Number" Binding="{Binding Path=Number}" Width="1*" IsReadOnly="true"/>
-                    <sdk:DataGridCheckBoxColumn Header="IsBuilt" Binding="{Binding Path=IsBuilt}" Width="1*" IsReadOnly="false"/>
-                    <sdk:DataGridTextColumn Header="Множества внешней устойчивости" Binding="{Binding Path=VerticesSet}" Width="10*" IsReadOnly="true"/>
+                    <sdk:DataGridTextColumn Header="№" Binding="{Binding Path=SccRows Number}" Width="40" IsReadOnly="true" />
+                    <sdk:DataGridCheckBoxColumn Header="Статус" Binding="{Binding Path=SccRows IsBuilt}" Width="40" IsReadOnly="false"/>
+                    <sdk:DataGridTextColumn Header="Множества внешней устойчивости" Binding="{Binding Path=SccRows VerticesSet}" Width="1*" IsReadOnly="true"/>
                 </sdk:DataGrid.Columns>
             </sdk:DataGrid>
 
@@ -122,6 +134,7 @@
                                       DataContext="{Binding UserActionsManager}">
 
             </controls1:InformationBar>
+            
         </Grid>
     </toolkit:BusyIndicator>
 </commonUi:TaskViewBase>

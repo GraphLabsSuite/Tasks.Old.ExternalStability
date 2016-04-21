@@ -50,19 +50,13 @@ namespace GraphLabs.Tasks.ExternalStability
         /// <summary> Текущее задание </summary>
         private Task _task;
 
+        /// <summary>
+        /// Требуемое число нахождения множеств внешней устойчивости
+        /// </summary>
         private short _countOfSes = 5;
 
         /// <summary> Текущее состояние </summary>
         private State _state;
-
-        /// <summary> Поставщик варианта </summary>
-        private readonly VariantProvider _variantProvider;
-
-        /// <summary> ID текущего задания </summary>
-        ///private readonly long _taskId;
-
-        /// <summary> Guid текущей сессии </summary>
-        ///private readonly Guid _sessionGuid;
 
         /// <summary> Допустимые версии генератора, с помощью которого сгенерирован вариант </summary>
         private readonly Version[] _allowedGeneratorVersions = new[] {  new Version(1, 0) };
@@ -76,7 +70,7 @@ namespace GraphLabs.Tasks.ExternalStability
 
         /// <summary> Идёт загрузка данных? </summary>
         public static readonly DependencyProperty IsLoadingDataProperty = DependencyProperty.Register(
-            "IsLoadingData", 
+            nameof(IsLoadingData), 
             typeof(bool), 
             typeof(ExternalStabilityViewModel), 
             new PropertyMetadata(false));
@@ -89,8 +83,7 @@ namespace GraphLabs.Tasks.ExternalStability
         }
 
         /// <summary> Разрешено перемещение вершин? </summary>
-        public static readonly DependencyProperty IsMouseVerticesMovingEnabledProperty = 
-            DependencyProperty.Register(
+        public static readonly DependencyProperty IsMouseVerticesMovingEnabledProperty = DependencyProperty.Register(
             nameof(IsMouseVerticesMovingEnabled),
             typeof(bool), 
             typeof(ExternalStabilityViewModel),
@@ -106,7 +99,7 @@ namespace GraphLabs.Tasks.ExternalStability
 
         /// <summary> Команды панели инструментов</summary>
         public static readonly DependencyProperty ToolBarCommandsProperty = DependencyProperty.Register(
-            "ToolBarCommands", 
+            nameof(ToolBarCommands), 
             typeof(ObservableCollection<ToolBarCommandBase>), 
             typeof(ExternalStabilityViewModel), 
             new PropertyMetadata(default(ObservableCollection<ToolBarCommandBase>)));
@@ -120,7 +113,7 @@ namespace GraphLabs.Tasks.ExternalStability
 
         /// <summary> Выданный в задании граф </summary>
         public static readonly DependencyProperty GivenGraphProperty = DependencyProperty.Register(
-            "GivenGraph", 
+           nameof(GivenGraph), 
             typeof(IGraph), 
             typeof(ExternalStabilityViewModel), 
             new PropertyMetadata(default(IGraph)));
@@ -134,7 +127,7 @@ namespace GraphLabs.Tasks.ExternalStability
 
         /// <summary> Загрузка silvelight-модуля выполнена </summary>
         public static readonly DependencyProperty OnLoadedCmdProperty = DependencyProperty.Register(
-            "OnLoadedCmd", 
+            nameof(OnLoadedCmd), 
             typeof(ICommand), 
             typeof(ExternalStabilityViewModel), 
             new PropertyMetadata(default(ICommand)));
@@ -148,7 +141,7 @@ namespace GraphLabs.Tasks.ExternalStability
 
         /// <summary> Клик по вершине </summary>
         public static readonly DependencyProperty VertexClickCmdProperty = DependencyProperty.Register(
-            "VertexClickCmd", 
+            nameof(VertexClickCmd), 
             typeof(ICommand), 
             typeof(ExternalStabilityViewModel), 
             new PropertyMetadata(default(ICommand)));
@@ -160,12 +153,18 @@ namespace GraphLabs.Tasks.ExternalStability
             set { SetValue(VertexClickCmdProperty, value); }
         }
 
+        /// <summary>
+        /// Множество внешней устойчивости, выбираемое студентом
+        /// </summary>
         public static readonly DependencyProperty SetDESProperty = DependencyProperty.Register(
-            "SetDES",
+            nameof(SetDES),
             typeof(ObservableCollection<IVertex>),
             typeof(ExternalStabilityViewModel),
             new PropertyMetadata(default(ObservableCollection<IVertex>)));
-
+        
+        /// <summary>
+        /// Множесто внешней устойчивости, выбираемое студентом
+        /// </summary>
         public ObservableCollection<IVertex> SetDES
         {
             get { return (ObservableCollection<IVertex>)GetValue(SetDESProperty); }
@@ -174,7 +173,7 @@ namespace GraphLabs.Tasks.ExternalStability
 
         /// <summary> Заполняемая студентом матрица </summary>
         public static readonly DependencyProperty MatrixProperty = DependencyProperty.Register(
-            "Matrix",
+            nameof(Matrix),
             typeof(ObservableCollection<MatrixRowViewModel<string>>),
             typeof(ExternalStabilityViewModel),
             new PropertyMetadata(default(ObservableCollection<MatrixRowViewModel<string>>)));
@@ -187,8 +186,8 @@ namespace GraphLabs.Tasks.ExternalStability
         }
         
         /// <summary> Вершины из визуализатора </summary>
-        public static DependencyProperty VertVisColProperty =
-            DependencyProperty.Register("VertVisCol",
+        public static DependencyProperty VertVisColProperty = DependencyProperty.Register(
+            nameof(VertVisCol),
             typeof(ReadOnlyCollection<Graphs.UIComponents.Visualization.Vertex>),
             typeof(ExternalStabilityViewModel),
             new PropertyMetadata(default(ReadOnlyCollection<Graphs.UIComponents.Visualization.Vertex>)));
@@ -201,8 +200,8 @@ namespace GraphLabs.Tasks.ExternalStability
         }
 
         /// <summary> Рёбра из визуализатора </summary>
-        public static DependencyProperty EdgeVisColProperty =
-            DependencyProperty.Register("EdgeVisCol",
+        public static DependencyProperty EdgeVisColProperty = DependencyProperty.Register(
+            nameof(EdgeVisCol),
             typeof(ReadOnlyCollection<Graphs.UIComponents.Visualization.Edge>),
             typeof(ExternalStabilityViewModel),
             new PropertyMetadata(default(ReadOnlyCollection<Graphs.UIComponents.Visualization.Edge>)));
@@ -215,10 +214,11 @@ namespace GraphLabs.Tasks.ExternalStability
         }
 
         /// <summary> Строки КСС для боковой панели в режиме "Конденсат" </summary>
-        public static readonly DependencyProperty SccRowsProperty =
-            DependencyProperty.Register
-                (   "SccRows", 
-                    typeof(IList<SccRowViewModel>), typeof(ExternalStabilityViewModel), new PropertyMetadata(default(SccRowViewModel)));
+        public static readonly DependencyProperty SccRowsProperty = DependencyProperty.Register(
+            nameof(SccRows), 
+            typeof(IList<SccRowViewModel>),
+            typeof(ExternalStabilityViewModel),
+            new PropertyMetadata(default(SccRowViewModel)));
 
         /// <summary> Строки КСС для боковой панели в режиме "Конденсат" </summary>
         public IList<SccRowViewModel> SccRows
@@ -228,7 +228,6 @@ namespace GraphLabs.Tasks.ExternalStability
         }
         #endregion
 
-    
 
         /// <summary> Допустимые версии генератора </summary>
         protected override Version[] AllowedGeneratorVersions
@@ -249,8 +248,13 @@ namespace GraphLabs.Tasks.ExternalStability
 
         private void SubscribeToViewEvents()
         {
-            View.VertexClicked += (sender, args) => OnVertexClick(args.Control);
+            VertexClickCmd = new DelegateCommand(
+                            o => OnVertexClick((IVertex) o),
+                            o => true);
+            //View.VertexClicked += (sender, args) => OnVertexClick(args.Control);
+            View.VertexClicked += (sender, args) => VertexClickCmd.Execute(args.Control);
             View.Loaded += (sender, args) => StartVariantDownload();
+            
         }
 
         /// <summary> Начать загрузку варианта </summary>
@@ -286,7 +290,9 @@ namespace GraphLabs.Tasks.ExternalStability
         {
             // Мы вызваны из другого потока. Поэтому работаем с UI-элементами через Dispatcher.
             Dispatcher.BeginInvoke(() => {
-            GivenGraph = GraphSerializer.Deserialize(e.Data);
+                GivenGraph = GraphSerializer.Deserialize(e.Data);
+                SccRows = new List<SccRowViewModel>();
+                SetDES = new ObservableCollection<IVertex>();
                 IsMouseVerticesMovingEnabled = true;
 
                 _task = Task.t11;
@@ -384,12 +390,11 @@ namespace GraphLabs.Tasks.ExternalStability
         }
 
         /// <summary> Добавление вершины в список </summary>
-
-
         public void SelectRMouseClick(IVertex clickedVertex)
         {
             var vertex = GivenGraph.Vertices.Single(clickedVertex.Equals);
             
+
             // Если вершину уже добавили - то удаляем.
             if (SetDES.Contains(vertex))
             {
@@ -418,7 +423,6 @@ namespace GraphLabs.Tasks.ExternalStability
             }
 
             SetDES.Add(vertex);
-
             Matrix[Convert.ToInt32(vertex.Name)].Background = new SolidColorBrush(Color.FromArgb(250, 230, 207, 207));
 
             VertVisCol[Convert.ToInt32(vertex.Name)].Background = new SolidColorBrush(Color.FromArgb(250, 230, 207, 207));
@@ -434,7 +438,11 @@ namespace GraphLabs.Tasks.ExternalStability
         }
 
 
-
+        /// <summary>
+        /// Проверка правильности заполнения матрицы смежности
+        /// </summary>
+        /// <param name="m"></param>
+        /// <returns></returns>
         private int CountOfErrorsMatrix(ObservableCollection<MatrixRowViewModel<string>> m)
         {
             var counter = 0;
@@ -456,6 +464,11 @@ namespace GraphLabs.Tasks.ExternalStability
             return counter;
         }
 
+        /// <summary>
+        /// Проверка правильности заполнения модифицированной матрицы смежности
+        /// </summary>
+        /// <param name="m"></param>
+        /// <returns></returns>
         private int CountOfErrorsMatrixforAlgorithm(ObservableCollection<MatrixRowViewModel<string>> m)
         {
             int counter = 0;
@@ -464,13 +477,13 @@ namespace GraphLabs.Tasks.ExternalStability
             {
                 for (int j = 0; j < GivenGraph.VerticesCount; j++)
                 {
-                    var temp = GivenGraph[GivenGraph.Vertices[i], GivenGraph.Vertices[j]];
+                    var directEdge = GivenGraph[GivenGraph.Vertices[i], GivenGraph.Vertices[j]];
 
-                    if ((i != j) && (m[i][j + 1] == "1") && (temp == null && GivenGraph[GivenGraph.Vertices[j], GivenGraph.Vertices[i]] == null))
+                    if ((i != j) && (m[i][j+1] == "1") && (directEdge == null))
                     {
                         counter++;
                     }
-                    if ((i != j) && (m[i][j + 1] != "1") && (GivenGraph[GivenGraph.Vertices[i], GivenGraph.Vertices[j]] != null || GivenGraph[GivenGraph.Vertices[j], GivenGraph.Vertices[i]] != null))
+                    if ((i != j) && (m[i][j+1] != "1") && (directEdge != null))
                     {
                         counter++;
                     }
@@ -484,11 +497,14 @@ namespace GraphLabs.Tasks.ExternalStability
             return counter;
         }
 
+        /// <summary>
+        /// Проверка выбранного множества вершин на соответствие множеству внешней устойчивости
+        /// </summary>
+        /// <returns></returns>
         private bool isExternalStability()
         {
             var isExternal = true;
             var isAdded = false;
-
             var extendedSetofVertex = new Collection<IVertex>();
 
             foreach (var vertex in SetDES)
@@ -496,7 +512,8 @@ namespace GraphLabs.Tasks.ExternalStability
                 extendedSetofVertex.Add(vertex);
             }
 
-            foreach (IVertex vertex in SetDES)
+            //Добавляем вершины, соседние с выбранными в расширенный набор вершин
+            foreach (var vertex in SetDES)
             {
                 foreach (var edge in GivenGraph.Edges)
                 {
@@ -513,6 +530,7 @@ namespace GraphLabs.Tasks.ExternalStability
                 // GivenGraph.Vertices.Where(e => externalMultiplicity.Contains(e.Vertex1));
             }
 
+            //Проверяем, есть ли вершины в графе, не являющиеся соседними с выбранным множеством
             foreach (var vertex in GivenGraph.Vertices)
             {
                 if (!extendedSetofVertex.Contains(vertex))
@@ -520,9 +538,12 @@ namespace GraphLabs.Tasks.ExternalStability
                     isExternal = false;
                 }
             }
+
             if (isExternal)
             {
                 --_countOfSes;
+
+                //Выбрано достаточное количество множеств внешней устойчивости
                 if (_countOfSes == 0)
                 {
                     MessageBox.Show("Задание 2 пройдено.\n Вы перешли к заданию 3.\n Ознакомьтесь со справкой.<?>");
@@ -530,8 +551,11 @@ namespace GraphLabs.Tasks.ExternalStability
                 }
                 UserActionsManager.RegisterInfo(string.Format(@"Множество добавлено. Осталось {0} множеств(о).",_countOfSes));
 
+
+
                 var sccStr = new SccRowViewModel(BuildSccName(SetDES));
 
+                //Поиск выбранного множества в списке всех множеств ???
                 foreach (var sccRow in SccRows)
                 {
                     if (sccRow.VerticesSet == sccStr.VerticesSet)
@@ -542,6 +566,7 @@ namespace GraphLabs.Tasks.ExternalStability
 
                 }
 
+                //Проверка на уже добавленность выбранного множества
                 if (isAdded)
                 {
                     MessageBox.Show("Множество "+sccStr.VerticesSet+" уже добавлено.");
@@ -551,14 +576,18 @@ namespace GraphLabs.Tasks.ExternalStability
                 {
                     SccRows.Add(sccStr);
                 }
+
+                //Очищаем текущее множество выбранных вершин
                 SetDES.Clear();
 
+                //Визуальное изменение выбранных элементов
                 foreach (var vertex in VertVisCol)
                 {
                     vertex.BorderBrush = new SolidColorBrush(defaultBorderColor);
                     vertex.Background = new SolidColorBrush(defaultBackgroundColor);
                     Matrix[Convert.ToInt32(vertex.Name)].Background = new SolidColorBrush(Color.FromArgb(250, 239, 240, 250));
                 }
+
 
                 foreach (var edge in EdgeVisCol)
                 {
@@ -575,12 +604,16 @@ namespace GraphLabs.Tasks.ExternalStability
 
         private const string SCC_NAME_DELIMITER = ", ";
 
+        //Строковое представление выбранного множества ???
         private string BuildSccName(IEnumerable<IVertex> vertices)
         {
             return string.Join(SCC_NAME_DELIMITER,
                                vertices.Select(v => v.Name).OrderBy(s => s));
         }
 
+        /// <summary>
+        /// Проверка выбранного множества на соответствие минимальному множеству внешней устойчивости
+        /// </summary>
         public void isthreedown()
         {
             var isAllMinimal = true;
@@ -589,7 +622,7 @@ namespace GraphLabs.Tasks.ExternalStability
             {
                 if ( (sccRow.IsBuilt == true) && (sccRow.VerticesSet.Length > 6))
                 {
-                    
+                   
                     isAllMinimal = false;
                 }
 

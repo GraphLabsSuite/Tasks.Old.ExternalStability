@@ -7,9 +7,7 @@ using GraphLabs.CommonUI;
 using GraphLabs.CommonUI.Controls.ViewModels;
 using GraphLabs.Graphs;
 using GraphLabs.Utils;
-
 using System.Collections.Generic;
-
 using System.Linq;
 using System.Windows;
 
@@ -60,7 +58,7 @@ namespace GraphLabs.Tasks.ExternalStability
                 Description = "Выбор множества внешней устойчивости"
             };
 
-            // Перемещение вершин
+            // Вызов окна со справкой
             var helpM = new ToolBarInstantCommand(
                 () => MessageBox.Show
                     (
@@ -95,7 +93,7 @@ namespace GraphLabs.Tasks.ExternalStability
                 Description = "справка"
             };
 
-            // Проверка матрицы
+            // Проверка задания
             var checkButton = new ToolBarInstantCommand(
                 () =>
                 {

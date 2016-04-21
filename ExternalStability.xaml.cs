@@ -42,11 +42,11 @@ namespace GraphLabs.Tasks.ExternalStability
 
         #endregion
         /// <summary> Вершины из визуализатора </summary>
-        public static DependencyProperty VertVisProperty =
-            DependencyProperty.Register("VertVis", 
-                                        typeof(ReadOnlyCollection<Vertex>), 
-                                        typeof(ExternalStability), 
-                                        new PropertyMetadata(default(ReadOnlyCollection<Vertex>)));
+        public static DependencyProperty VertVisProperty = DependencyProperty.Register(
+            nameof(VertVis), 
+            typeof(ReadOnlyCollection<Vertex>), 
+            typeof(ExternalStability), 
+            new PropertyMetadata(default(ReadOnlyCollection<Vertex>)));
 
 
         /// <summary> Вершины из визуализатора </summary>
@@ -57,11 +57,11 @@ namespace GraphLabs.Tasks.ExternalStability
         }
 
         /// <summary> Рёбра из визуализатора </summary>
-        public static DependencyProperty EdgeVisProperty =
-            DependencyProperty.Register("EdgeVis", 
-                                        typeof(ReadOnlyCollection<Edge>), 
-                                        typeof(ExternalStability), 
-                                        new PropertyMetadata(default(ReadOnlyCollection<Edge>)));
+        public static DependencyProperty EdgeVisProperty = DependencyProperty.Register(
+            nameof(EdgeVis), 
+            typeof(ReadOnlyCollection<Edge>), 
+            typeof(ExternalStability), 
+            new PropertyMetadata(default(ReadOnlyCollection<Edge>)));
 
         /// <summary> Рёбра из визуализатора </summary>
         public ReadOnlyCollection<Edge> EdgeVis
@@ -70,14 +70,14 @@ namespace GraphLabs.Tasks.ExternalStability
             set { SetValue(EdgeVisProperty, value); }
         }
 
-        /// <summary> Рёбра из визуализатора </summary>
-        public static DependencyProperty MatrixVisProperty =
-            DependencyProperty.Register("MatrixVis",
-                                        typeof(ReadOnlyCollection<MatrixRowViewModel<string>>),
-                                        typeof(ExternalStability),
-                                        new PropertyMetadata(default(ReadOnlyCollection<MatrixRowViewModel<string>>)));
+        /// <summary> Матрица из визуализатора </summary>
+        public static DependencyProperty MatrixVisProperty = DependencyProperty.Register(
+            nameof(MatrixVis),
+            typeof(ReadOnlyCollection<MatrixRowViewModel<string>>),
+            typeof(ExternalStability),
+            new PropertyMetadata(default(ReadOnlyCollection<MatrixRowViewModel<string>>)));
 
-        /// <summary> Рёбра из визуализатора </summary>
+        /// <summary> Матрица из визуализатора </summary>
         public ReadOnlyCollection<MatrixRowViewModel<string>> MatrixVis
         {
             get { return (ReadOnlyCollection<MatrixRowViewModel<string>>) GetValue(MatrixVisProperty); }
@@ -129,11 +129,6 @@ namespace GraphLabs.Tasks.ExternalStability
         }
 
         private void GraphVisualizer_Loaded()
-        {
-
-        }
-
-        private void Matrix_Loaded(object sender, RoutedEventArgs e)
         {
 
         }
