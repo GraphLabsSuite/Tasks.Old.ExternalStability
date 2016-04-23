@@ -291,7 +291,7 @@ namespace GraphLabs.Tasks.ExternalStability
             // Мы вызваны из другого потока. Поэтому работаем с UI-элементами через Dispatcher.
             Dispatcher.BeginInvoke(() => {
                 GivenGraph = GraphSerializer.Deserialize(e.Data);
-                SccRows = new List<SccRowViewModel>();
+                SccRows = new ObservableCollection<SccRowViewModel>();
                 SetDES = new ObservableCollection<IVertex>();
                 IsMouseVerticesMovingEnabled = true;
 
