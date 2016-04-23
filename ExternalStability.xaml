@@ -76,7 +76,7 @@
             <visualization1:GraphVisualizer x:Name="Visualizer" 
                                        Grid.Column="0" 
                                        Grid.Row="0"
-                                       Grid.RowSpan="4"
+                                       Grid.RowSpan="3"
                                        Background= "#ffffff"
                                        IsMouseVerticesMovingEnabled="{Binding IsMouseVerticesMovingEnabled}"
                                        VisualizationAlgorithm="Circle"
@@ -94,7 +94,10 @@
                                        MinHeight="100"
                                        MinWidth="100"/>
 
-
+            <sdk:GridSplitter Grid.Row="0"
+                              Grid.RowSpan="3"
+                              Grid.Column="0"
+                              Width="1"/>
             <!-- Матрица-->
             <controls1:Matrix Name="Matrix"
                               Grid.Column="1"
