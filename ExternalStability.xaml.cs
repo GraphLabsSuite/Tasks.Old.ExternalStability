@@ -17,9 +17,9 @@ namespace GraphLabs.Tasks.ExternalStability
 
         /// <summary> Клик по вершине </summary>
         public static readonly DependencyProperty VertexClickCommandProperty = DependencyProperty.Register(
-            "VertexClickCommand", 
-            typeof(ICommand), 
-            typeof(ExternalStability), 
+            "VertexClickCommand",
+            typeof(ICommand),
+            typeof(ExternalStability),
             new PropertyMetadata(default(ICommand)));
 
         /// <summary> Клик по вершине </summary>
@@ -43,9 +43,9 @@ namespace GraphLabs.Tasks.ExternalStability
         #endregion
         /// <summary> Вершины из визуализатора </summary>
         public static DependencyProperty VertVisProperty = DependencyProperty.Register(
-            nameof(VertVis), 
-            typeof(ReadOnlyCollection<Vertex>), 
-            typeof(ExternalStability), 
+            nameof(VertVis),
+            typeof(ReadOnlyCollection<Vertex>),
+            typeof(ExternalStability),
             new PropertyMetadata(default(ReadOnlyCollection<Vertex>)));
 
 
@@ -58,9 +58,9 @@ namespace GraphLabs.Tasks.ExternalStability
 
         /// <summary> Рёбра из визуализатора </summary>
         public static DependencyProperty EdgeVisProperty = DependencyProperty.Register(
-            nameof(EdgeVis), 
-            typeof(ReadOnlyCollection<Edge>), 
-            typeof(ExternalStability), 
+            nameof(EdgeVis),
+            typeof(ReadOnlyCollection<Edge>),
+            typeof(ExternalStability),
             new PropertyMetadata(default(ReadOnlyCollection<Edge>)));
 
         /// <summary> Рёбра из визуализатора </summary>
@@ -80,10 +80,28 @@ namespace GraphLabs.Tasks.ExternalStability
         /// <summary> Матрица из визуализатора </summary>
         public ReadOnlyCollection<MatrixRowViewModel<string>> MatrixVis
         {
-            get { return (ReadOnlyCollection<MatrixRowViewModel<string>>) GetValue(MatrixVisProperty); }
+            get { return (ReadOnlyCollection<MatrixRowViewModel<string>>)GetValue(MatrixVisProperty); }
             set { SetValue(MatrixVisProperty, value); }
         }
-        
+
+        /// <summary>
+        /// Список множеств внешней устойчивости из визуализатора
+        /// </summary>
+        public static DependencyProperty SccRowsVisProperty = DependencyProperty.Register(
+            nameof(SccRowsVis),
+            typeof(ReadOnlyCollection<SccRowViewModel>),
+            typeof(ExternalStability),
+            new PropertyMetadata(default(ReadOnlyCollection<SccRowViewModel>)));
+
+        /// <summary>
+        /// Список множеств внешней устойчивости из визуализатора
+        /// </summary>
+        public ReadOnlyCollection<SccRowViewModel> SccRowsVis
+        {
+            get { return (ReadOnlyCollection<SccRowViewModel>)GetValue(SccRowsVisProperty); }
+            set { SetValue(SccRowsVisProperty, value); }
+        }
+
         /// <summary> Ctor. </summary>
         public ExternalStability()
         {

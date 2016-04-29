@@ -199,6 +199,9 @@
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="Configuration\MockedWcfServicesConfigurator.cs" />
+    <Compile Include="MatrixErrorCounter.cs" />
+    <Compile Include="MinDSVertexViewModel.cs" />
+    <Compile Include="RealMinimalDominatingSet.cs" />
     <Compile Include="SccRowViewModel.cs" />
     <Compile Include="ExternalStabilityViewModel.ToolBarCommands.cs" />
     <Compile Include="ExternalStability.xaml.cs">
@@ -206,6 +209,7 @@
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ExternalStabilityViewModel.cs" />
+    <Compile Include="TemporalDS.cs" />
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">

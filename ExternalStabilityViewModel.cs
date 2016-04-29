@@ -33,7 +33,7 @@ namespace GraphLabs.Tasks.ExternalStability
             SetDES,
         }
         /// <summary> Текущее подзадание </summary>
-        private enum Task
+        public enum Task
         {
             /// <summary>Заполнение матрицы </summary>
             t11,
@@ -48,7 +48,7 @@ namespace GraphLabs.Tasks.ExternalStability
         }
 
         /// <summary> Текущее задание </summary>
-        private Task _task;
+        public Task _task;
 
         /// <summary>
         /// Требуемое число нахождения множеств внешней устойчивости
@@ -324,27 +324,11 @@ namespace GraphLabs.Tasks.ExternalStability
         /// <summary> Проверка матрицы </summary>
         public void checkMatrix()
         {
-            int counter = CountOfErrorsMatrix(Matrix);
-            if (counter > 0)
+            var counter = new MatrixErrorCounter();
+            int amount = counter.CountOfErrorsMatrix(Matrix);
+            if (amount > 0)
             {
-                short k = (short) ((short) counter * 3);
-                string mistake = null;
-                switch (counter)
-                {
-                    case 1:
-                        mistake = "Найдена " + counter.ToString() + " ошибка";
-                        break;
-                    case 2:
-                    case 3:
-                    case 4:
-                        mistake = "Найдено " + counter.ToString() + " ошибки";
-                        break;
-                    default:
-                        mistake = "Найдено " + counter.ToString() + " ошибок";
-                        break;
-                }
-
-                UserActionsManager.RegisterMistake(mistake,k);
+                counter.ShowMatrixErrors(amount);
             }
             else
             {
@@ -357,26 +341,11 @@ namespace GraphLabs.Tasks.ExternalStability
 
         public void checkMatrixforAghorithm()
         {
-            int counter = CountOfErrorsMatrixforAlgorithm(Matrix);
-
-            if (counter > 0)
+            var counter = new MatrixErrorCounter();
+            int amount = counter.CountOfErrorsMatrixforAlgorithm(Matrix);
+            if (amount > 0)
             {
-                short k = (short)((short)counter * 3);
-                string mistake = null;
-                switch (counter)
-                {
-                    case 1:
-                        mistake = "Найдена " + counter.ToString() + " ошибка";
-                        break;
-                    case 2: case 3: case 4:
-                        mistake = "Найдено " + counter.ToString() + " ошибки";
-                        break;
-                    default:
-                        mistake = "Найдено " + counter.ToString() + " ошибок";
-                        break;
-                }
-               
-                UserActionsManager.RegisterMistake(mistake, k);
+                counter.ShowMatrixErrors(amount);
             }
             else
             {
@@ -435,66 +404,6 @@ namespace GraphLabs.Tasks.ExternalStability
             }
 
             UserActionsManager.RegisterInfo(string.Format("Выбрана вершина: {0}", clickedVertex.Name));
-        }
-
-
-        /// <summary>
-        /// Проверка правильности заполнения матрицы смежности
-        /// </summary>
-        /// <param name="m"></param>
-        /// <returns></returns>
-        private int CountOfErrorsMatrix(ObservableCollection<MatrixRowViewModel<string>> m)
-        {
-            var counter = 0;
-
-            for (var i = 0; i < GivenGraph.VerticesCount; i++)
-                for (var j = 0; j < GivenGraph.VerticesCount; j++)
-                {
-                    var studentInput = (m[i][j + 1] ?? "").Trim();
-                    var directEdge = GivenGraph[GivenGraph.Vertices[i], GivenGraph.Vertices[j]];
-
-                    if (directEdge != null && studentInput != "1"
-                        ||
-                        directEdge == null && studentInput == "1")
-                    {
-                        counter++;
-                    }
-                }
-
-            return counter;
-        }
-
-        /// <summary>
-        /// Проверка правильности заполнения модифицированной матрицы смежности
-        /// </summary>
-        /// <param name="m"></param>
-        /// <returns></returns>
-        private int CountOfErrorsMatrixforAlgorithm(ObservableCollection<MatrixRowViewModel<string>> m)
-        {
-            int counter = 0;
-
-            for (int i = 0; i < GivenGraph.VerticesCount; i++)
-            {
-                for (int j = 0; j < GivenGraph.VerticesCount; j++)
-                {
-                    var directEdge = GivenGraph[GivenGraph.Vertices[i], GivenGraph.Vertices[j]];
-
-                    if ((i != j) && (m[i][j+1] == "1") && (directEdge == null))
-                    {
-                        counter++;
-                    }
-                    if ((i != j) && (m[i][j+1] != "1") && (directEdge != null))
-                    {
-                        counter++;
-                    }
-                    if ((i == j) && (m[i][j+1] != "1"))
-                    {
-                        counter++;
-                    }
-                }
-            }
-
-            return counter;
         }
 
         /// <summary>
@@ -617,6 +526,8 @@ namespace GraphLabs.Tasks.ExternalStability
         public void isthreedown()
         {
             var isAllMinimal = true;
+            var MinDSs = new RealMinimalDominatingSet;
+            MinDSs.FindAllMinDS(GivenGraph, Matrix);
 
             foreach (var sccRow in SccRows)
             {

@@ -126,9 +126,9 @@
                               AutoGenerateColumns="False" 
                               AlternatingRowBackground="#FFE8E8E8" Grid.ColumnSpan="2">
                 <sdk:DataGrid.Columns>
-                    <sdk:DataGridTextColumn Header="№" Binding="{Binding Path=Number}" Width="40" IsReadOnly="true" />
-                    <sdk:DataGridCheckBoxColumn Header="Статус" Binding="{Binding Path=IsBuilt}" Width="40" IsReadOnly="false"/>
-                    <sdk:DataGridTextColumn Header="Множества внешней устойчивости" Binding="{Binding Path=VerticesSet}" Width="1*" IsReadOnly="true"/>
+                    <sdk:DataGridTextColumn Header="№" Binding="{Binding Path=Number, Mode=TwoWay}" Width="40" IsReadOnly="true" />
+                    <sdk:DataGridCheckBoxColumn Header="Статус" Binding="{Binding Path=IsBuilt, Mode=TwoWay}" Width="40" IsReadOnly="false"/>
+                    <sdk:DataGridTextColumn Header="Множества внешней устойчивости" Binding="{Binding Path=VerticesSet, Mode=TwoWay}" Width="1*" IsReadOnly="true"/>
                 </sdk:DataGrid.Columns>
             </sdk:DataGrid>
 
