@@ -319,8 +319,10 @@ namespace GraphLabs.Tasks.ExternalStability
                 _changedCollection = (ObservableCollection<string>)sender;
             }
 
-       
-        
+
+     
+
+
         /// <summary> Проверка матрицы </summary>
         public void checkMatrix()
         {
@@ -462,7 +464,7 @@ namespace GraphLabs.Tasks.ExternalStability
 
 
 
-                var sccStr = new SccRowViewModel(BuildSccName(SetDES));
+                var sccStr = new SccRowViewModel(SetDES);
 
                 //Поиск выбранного множества в списке всех множеств ???
                 foreach (var sccRow in SccRows)
@@ -511,33 +513,22 @@ namespace GraphLabs.Tasks.ExternalStability
             return true;
         }
 
-        private const string SCC_NAME_DELIMITER = ", ";
-
-        //Строковое представление выбранного множества ???
-        private string BuildSccName(IEnumerable<IVertex> vertices)
-        {
-            return string.Join(SCC_NAME_DELIMITER,
-                               vertices.Select(v => v.Name).OrderBy(s => s));
-        }
-
         /// <summary>
         /// Проверка выбранного множества на соответствие минимальному множеству внешней устойчивости
         /// </summary>
         public void isthreedown()
         {
             var isAllMinimal = true;
-            var MinDSs = new RealMinimalDominatingSet;
-            MinDSs.FindAllMinDS(GivenGraph, Matrix);
 
             foreach (var sccRow in SccRows)
             {
-                if ( (sccRow.IsBuilt == true) && (sccRow.VerticesSet.Length > 6))
+                if ( (sccRow.IsBuilt == true) && (sccRow.VerticesSet.Count > 6))
                 {
                    
                     isAllMinimal = false;
                 }
 
-                if ((sccRow.IsBuilt == false) && (sccRow.VerticesSet.Length < 7))
+                if ((sccRow.IsBuilt == false) && (sccRow.VerticesSet.Count < 7))
                 {
                     isAllMinimal = false;
                 }

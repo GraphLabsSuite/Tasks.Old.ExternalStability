@@ -1,4 +1,6 @@
 ﻿using System.Windows;
+using GraphLabs.Graphs;
+using System.Collections.ObjectModel;
 
 namespace GraphLabs.Tasks.ExternalStability
 {
@@ -27,14 +29,14 @@ namespace GraphLabs.Tasks.ExternalStability
         /// <summary> Множество вершин </summary>
         public static readonly DependencyProperty VerticesSetProperty = DependencyProperty.Register(
             nameof(VerticesSet),
-            typeof(string),
+            typeof(ObservableCollection<IVertex>),
             typeof(SccRowViewModel),
             new PropertyMetadata(default(string)));
         
         /// <summary> Множество вершин </summary>
-        public string VerticesSet
+        public ObservableCollection<IVertex> VerticesSet
         {
-            get { return (string)GetValue(VerticesSetProperty); }
+            get { return (ObservableCollection<IVertex>)GetValue(VerticesSetProperty); }
             set { SetValue(VerticesSetProperty, value); }
         }
 
@@ -60,10 +62,10 @@ namespace GraphLabs.Tasks.ExternalStability
         }
 
         /// <summary> Ctor. </summary>
-        public SccRowViewModel(string name)
+        public SccRowViewModel(ObservableCollection<IVertex> vertices)
         {
             Number = ++_count;
-            VerticesSet = string.Format("{{{0}}}", name);
+            VerticesSet = vertices;
             IsBuilt = false;
         }
         

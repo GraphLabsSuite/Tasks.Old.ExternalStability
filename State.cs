@@ -5,10 +5,22 @@ using System;
 
 namespace GraphLabs.Tasks.ExternalStability
 {
-    enum Color
+    /// <summary>
+    /// Цвета вершин
+    /// </summary>
+    public enum StateColor
     {
+        /// <summary>
+        /// Белый
+        /// </summary>
         WHITE,
+        /// <summary>
+        /// Синий
+        /// </summary>
         BLUE,
+        /// <summary>
+        /// Красный
+        /// </summary>
         RED
     }
 
@@ -17,51 +29,41 @@ namespace GraphLabs.Tasks.ExternalStability
     /// </summary>
     public class State : ICloneable
     {
-        public IDictionary<Vertex, Color> VertexColor {
-            get
-            {
-                if (VertexColor.ContainsKey(key) == true)
-                return VertexColor.TryGetValue(key, value);
-            }
-            private set
-            {
-                VertexColor.Add(key, value);
-            }
-        }
-        public IDictionary<Vertex, List<Vertex>> VertexNeighbors {
-            get
-            {
-                if (VertexNeighbors.ContainsKey(key) == true)
-                    return VertexNeighbors.TryGetValue(key, value);
-            }
-            private set
-            {
-                VertexNeighbors.Add(key, value);
-            }
-        }
-       public IDictionary<Vertex, int> VertexDominatedNumber {
-            get
-            {
-                if (VertexDominatedNumber.ContainsKey(key) == true)
-                    return VertexDominatedNumber.TryGetValue(key, value);
-            }
-            private set
-            {
-                 VertexDominatedNumber.Add(key, value);
-            }
+        /// <summary>
+        /// Цвета вершин
+        /// </summary>
+        public IDictionary<Vertex, StateColor> VertexColor
+        {
+            get;
+            private set;
         }
 
+
+        /// <summary>
+        /// Соседи вершин
+        /// </summary>
+        public IDictionary<Vertex, List<Vertex>> VertexNeighbors
+        {
+            get;
+            private set;
+        }
+
+        /// <summary>
+        /// Число доминантов
+        /// </summary>
+       public IDictionary<Vertex, int> VertexDominatedNumber
+        {
+            get;
+            private set;
+        }
+
+        /// <summary>
+        /// Возможное число доминантов
+        /// </summary>
         public IDictionary<Vertex, int> VertexPossibleDominatingNumber
         {
-            get
-            {
-                if (VertexPossibleDominatingNumber.ContainsKey(key) == true)
-                    return VertexPossibleDominatingNumber.TryGetValue(key, value);
-            }
-            private set
-            {
-                VertexPossibleDominatingNumber.Add(key, value);
-            }
+            get;
+            private set;
         }
 
         /// <summary>
@@ -98,7 +100,7 @@ namespace GraphLabs.Tasks.ExternalStability
             Level = 0;
             foreach (Vertex vertex in graph.Vertices)
             {
-                VertexColor.Add(vertex, Color.WHITE);
+                VertexColor.Add(vertex, StateColor.WHITE);
                 VertexDominatedNumber.Add(vertex, 0);
                 List<Vertex> TempNeighbors = null;
                 for (int i = 0; i < graph.VerticesCount; i++)

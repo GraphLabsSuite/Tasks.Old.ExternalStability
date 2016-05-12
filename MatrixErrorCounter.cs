@@ -52,7 +52,6 @@ namespace GraphLabs.Tasks.ExternalStability
 
                 UserActionsManager.RegisterMistake(mistake, k);
         }
-        
 
         /// <summary>
         /// Проверка правильности заполнения матрицы смежности
@@ -79,7 +78,6 @@ namespace GraphLabs.Tasks.ExternalStability
 
             return counter;
         }
-
 
         /// <summary>
         /// Проверка правильности заполнения модифицированной матрицы смежности

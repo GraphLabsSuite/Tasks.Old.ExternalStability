@@ -1,10 +1,11 @@
 ﻿using GraphLabs.Graphs;
 using System.Collections.Generic;
-using System;
-using State.cs;
 
 namespace GraphLabs.Tasks.ExternalStability
 {
+    /// <summary>
+    /// Вычисление минимального множества внешней устойчивости
+    /// </summary>
     public class MinDSEvaluator
     {
         private List<List<Vertex>> MinDS;
@@ -53,46 +54,44 @@ namespace GraphLabs.Tasks.ExternalStability
         /// <returns></returns>
         public bool CanVertexBeCovered (Vertex vertex, State state)
         {
-            foreach (KeyValuePair<Vertex,List<Vertex>> keyValue in state.VertexNeighbors)
-                if (keyValue.Key == vertex)
+            List<Vertex> Neighbors;
+            state.VertexNeighbors.TryGetValue(vertex, out Neighbors);
+                foreach (Vertex vert in Neighbors)
                 {
-                    foreach (Vertex vert in keyValue.Value)
+                int VertDomNum;
+                state.VertexPossibleDominatingNumber.TryGetValue(vertex, out VertDomNum);
+                    if (VertDomNum == 0)
                     {
-                        foreach (KeyValuePair<Vertex, int> keyValue2 in state.VertexDominatedNumber)
-                        {
-                            if ((keyValue2.Key == vert) && (keyValue2.Value == 0))
-                            {
-                                return false;
-                            }
-                        }
+                        return false;
                     }
-                    return true;
-                } else
-                {
-                    return false;
                 }
-        }
-
+                return true;
+            }
+        /// <summary>
+        /// Проверка на то, что все вершины ещё могут быть кем-либо доминируемы
+        /// </summary>
+        /// <param name="state"></param>
+        /// <returns></returns>
         public bool CanVerticesBeCovered (State state)
         {
-            foreach (KeyValuePair<Vertex, List<Vertex>> keyValue in state.VertexNeighbors)
+            foreach (KeyValuePair<Vertex, List<Vertex>> keyValue in state.VertexNeighbors) {
                     foreach (Vertex vert in keyValue.Value)
                     {
-                        foreach (KeyValuePair<Vertex, int> keyValue2 in state.VertexDominatedNumber)
-                        {
-                            if ((keyValue2.Key == vert) && (keyValue2.Value == 0))
-                            {
-                                return false;
-                            }
-                        }
+                    int VertDomNum;
+                    state.VertexPossibleDominatingNumber.TryGetValue(keyValue.Key, out VertDomNum);
+                    if (VertDomNum == 0)
+                    {
+                        return false;
                     }
-                    return true;
+                }
+             }
+             return true;
         }
 
         private int RecountNDominated (State state)
         {
             int Result = 0;
-            foreach (KeyValuePair<Vertex, bool> keyValue in state.VertexDominatedNumber)
+            foreach (KeyValuePair<Vertex, int> keyValue in state.VertexDominatedNumber)
             {
                 if (keyValue.Value > 0)
                 {
@@ -112,11 +111,13 @@ namespace GraphLabs.Tasks.ExternalStability
                     {
                         foreach (KeyValuePair<Vertex, int> keyValue2 in state.VertexPossibleDominatingNumber)
                         {
-                            if (keyValue2.Value == vert)
+                            if (keyValue2.Key == vert)
                             {
-                                temp = state.VertexPossibleDominatingNumber.get(vert);
+                                int temp;
+                                state.VertexPossibleDominatingNumber.TryGetValue(vert, out temp);
                                 temp--;
-                                state.VertexPossibleDominatingNumber.set(vert, temp);
+                                state.VertexPossibleDominatingNumber.Remove(vert);
+                                state.VertexPossibleDominatingNumber.Add(vert, temp);
                             }
                         }
                     }
@@ -134,23 +135,27 @@ namespace GraphLabs.Tasks.ExternalStability
                     {
                         foreach (KeyValuePair<Vertex, int> keyValue2 in state.VertexPossibleDominatingNumber)
                         {
-                            if (keyValue2.Value == vert)
+                            if (keyValue2.Key == vert)
                             {
-                                temp = state.VertexPossibleDominatingNumber.get(vert);
+                                int temp;
+                                state.VertexPossibleDominatingNumber.TryGetValue(vert, out temp);
                                 temp++;
-                                state.VertexPossibleDominatingNumber.set(vert, temp);
-                                temp2 = state.VertexDominatedNumber.get(vert);
+                                state.VertexPossibleDominatingNumber.Remove(vert);
+                                state.VertexPossibleDominatingNumber.Add(vert, temp);
+                                int temp2;
+                                state.VertexDominatedNumber.TryGetValue(vert, out temp2);
                                 temp2++;
-                                state.VertexPossibleDominatingNumber.set(vert, temp2);
+                                state.VertexDominatedNumber.Remove(vert);
+                                state.VertexDominatedNumber.Add(vert, temp2);
                             }
                         }
                     }
                 }
             }
-            state.N_dominated.set(RecountNDominated(state));
+            state.N_dominated = RecountNDominated(state);
         }
 
-        private void Process(State givenState, UnDirectedGraph graph)
+        private void Process(State givenState, UndirectedGraph graph)
         {
             if (givenState.Level == N)
             {
@@ -163,7 +168,7 @@ namespace GraphLabs.Tasks.ExternalStability
                 {
                     if (MinDS.Count > givenState.TempDS.Count)
                     {
-                        MinDS.Clear;
+                        MinDS.Clear();
                         MinDS.Add(givenState.TempDS);
                         return;
                     }
@@ -189,13 +194,15 @@ namespace GraphLabs.Tasks.ExternalStability
                     }
                     else
                     {
-                        State newState = givenState.Clone();
+                        State newState = (State)givenState.Clone();
                         newState.Level++;
                         Vertex givenVertex = graph.Vertices[givenState.Level];
-                        newState.VertexColor.set(givenVertex, givenState.Color.BLUE);
+                        newState.VertexColor.Remove(givenVertex);
+                        newState.VertexColor.Add(givenVertex, StateColor.BLUE);
                         BlueVertexRecount(givenState, givenVertex);
                         Process(newState, graph);
-                        newState.VertexColor.set(givenVertex, givenState.Color.RED);
+                        newState.VertexColor.Remove(givenVertex);
+                        newState.VertexColor.Add(givenVertex, StateColor.RED);
                         RedVertexRecount(givenState, givenVertex);
                         Process(newState, graph);
                         return;
