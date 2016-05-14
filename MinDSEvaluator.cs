@@ -211,7 +211,7 @@ namespace GraphLabs.Tasks.ExternalStability
                     }
                     else
                     {
-                        var newState = (State)givenState.Clone();
+                        var newState = givenState.Clone();
                         newState.Level++;
                         var givenVertex = graph.Vertices[givenState.Level];
                         newState.VertexColor.Remove(givenVertex);

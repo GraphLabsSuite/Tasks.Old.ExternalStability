@@ -27,7 +27,7 @@ namespace GraphLabs.Tasks.ExternalStability
     /// <summary>
     /// Состояние графа в момент рекурсии
     /// </summary>
-    public class State : ICloneable
+    public class State
     {
         /// <summary>
         /// Цвета вершин
@@ -42,11 +42,7 @@ namespace GraphLabs.Tasks.ExternalStability
         /// <summary>
         /// Соседи вершин
         /// </summary>
-        public IDictionary<Vertex, List<Vertex>> VertexNeighbors
-        {
-            get;
-            private set;
-        }
+        public IDictionary<Vertex, List<Vertex>> VertexNeighbors { get;private set; }
 
         /// <summary>
         /// Число доминантов
@@ -60,34 +56,30 @@ namespace GraphLabs.Tasks.ExternalStability
         /// <summary>
         /// Возможное число доминантов
         /// </summary>
-        public IDictionary<Vertex, int> VertexPossibleDominatingNumber
-        {
-            get;
-            private set;
-        }
+        public IDictionary<Vertex, int> VertexPossibleDominatingNumber { get; private set; }
 
         /// <summary>
         /// Текущее доминирующее множество
         /// </summary>
-        public List<Vertex> TempDS;
+        public List<Vertex> TempDS { get; private set; }
 
         /// <summary>
         /// Количество доминируемых вершин
         /// </summary>
-        public int N_dominated;
+        public int N_dominated { get; private set; }
 
         /// <summary>
         /// Уровень рекурсии
         /// </summary>
-        public int Level;
+        public int Level { get; private set; }
 
         /// <summary>
         /// Создаёт копию объекта для рекурсии
         /// </summary>
         /// <returns></returns>
-        public object Clone()
+        public State Clone()
         {
-            return this.MemberwiseClone();
+            return new State(this);
         }
 
         /// <summary>
@@ -111,6 +103,15 @@ namespace GraphLabs.Tasks.ExternalStability
                 VertexPossibleDominatingNumber.Add(vertex, TempNeighbors.Count);
             }
             N_dominated = 0;
+        }
+
+        private State(State prototype)
+        {
+            this.Level = prototype.Level;
+            this.N_dominated = prototype.N_dominated;
+            this.TempDS = prototype.TempDS;
+            this.VertexColor = new Dictionary<Vertex, StateColor>(prototype.VertexColor);
+            //...
         }
     }
 }
