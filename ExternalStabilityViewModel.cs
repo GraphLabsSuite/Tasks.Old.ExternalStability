@@ -30,7 +30,7 @@ namespace GraphLabs.Tasks.ExternalStability
             /// <summary> Пусто </summary>
             Nothing,
             /// <summary> Добавление вершин в множество ES </summary>
-            SetDES,
+            SetDes,
         }
         /// <summary> Текущее подзадание </summary>
         public enum Task
@@ -324,10 +324,10 @@ namespace GraphLabs.Tasks.ExternalStability
 
 
         /// <summary> Проверка матрицы </summary>
-        public void checkMatrix()
+        private void CheckMatrix()
         {
             var counter = new MatrixErrorCounter();
-            int amount = counter.CountOfErrorsMatrix(Matrix);
+            var amount = counter.CountOfErrorsMatrix(Matrix);
             if (amount > 0)
             {
                 counter.ShowMatrixErrors(amount);
@@ -341,7 +341,7 @@ namespace GraphLabs.Tasks.ExternalStability
 
         /// <summary> Проверка матрицы для алгоритма </summary>
 
-        public void checkMatrixforAghorithm()
+        private void CheckMatrixforAghorithm()
         {
             var counter = new MatrixErrorCounter();
             int amount = counter.CountOfErrorsMatrixforAlgorithm(Matrix);
@@ -352,7 +352,7 @@ namespace GraphLabs.Tasks.ExternalStability
             else
             {
                 MessageBox.Show("Задание 1.2 пройдено.\n Вы перешли к заданию 2.\n Ознакомьтесь со справкой.<?>");
-                for (int i = 0; i < GivenGraph.VerticesCount; ++i)
+                for (var i = 0; i < GivenGraph.VerticesCount; ++i)
                 {
                     Matrix[i].IsEnabled = false;
                 }
@@ -516,10 +516,20 @@ namespace GraphLabs.Tasks.ExternalStability
         /// <summary>
         /// Проверка выбранного множества на соответствие минимальному множеству внешней устойчивости
         /// </summary>
-        public void isthreedown()
+        public void IsMinDS()
         {
             var isAllMinimal = true;
+            //var MinDSCount = new MinDSEvaluator(GivenGraph);
+            //MinDSCount.Evaluate(GivenGraph);
+            //var RealSccRows = new List<SccRowViewModel>();
+            //foreach (var minDs in MinDSCount.MinDS)
+            //{
+            //    var tempScc = new SccRowViewModel(minDs);
+            //    RealSccRows.Add(tempScc);
+            //}
+            //TUT PROBLEMY S TIPAMI
 
+            //Далее поиск и сравнение найденных по алгоритму множеств с теми, что выбрал студент (пока не переделывал)
             foreach (var sccRow in SccRows)
             {
                 if ( (sccRow.IsBuilt == true) && (sccRow.VerticesSet.Count > 6))

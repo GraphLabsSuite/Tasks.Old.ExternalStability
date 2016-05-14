@@ -1,6 +1,10 @@
-﻿using System.Windows;
+﻿using System;
+using System.Collections.Generic;
+using System.Windows;
 using GraphLabs.Graphs;
 using System.Collections.ObjectModel;
+using System.Linq;
+
 
 namespace GraphLabs.Tasks.ExternalStability
 {
@@ -26,18 +30,23 @@ namespace GraphLabs.Tasks.ExternalStability
         /// </summary>
         private static int _count;
 
-        /// <summary> Множество вершин </summary>
-        public static readonly DependencyProperty VerticesSetProperty = DependencyProperty.Register(
-            nameof(VerticesSet),
-            typeof(ObservableCollection<IVertex>),
+        /// <summary>
+        /// Множество вершин
+        /// </summary>
+        public ObservableCollection<IVertex> VerticesSet;  
+
+        /// <summary> Множество вершин для вывода </summary>
+        public static readonly DependencyProperty VerticesViewProperty = DependencyProperty.Register(
+            nameof(VerticesView),
+            typeof(string),
             typeof(SccRowViewModel),
             new PropertyMetadata(default(string)));
         
         /// <summary> Множество вершин </summary>
-        public ObservableCollection<IVertex> VerticesSet
+        public string VerticesView
         {
-            get { return (ObservableCollection<IVertex>)GetValue(VerticesSetProperty); }
-            set { SetValue(VerticesSetProperty, value); }
+            get { return (string)GetValue(VerticesViewProperty); }
+            private set { SetValue(VerticesViewProperty, value); }
         }
 
 
@@ -52,7 +61,7 @@ namespace GraphLabs.Tasks.ExternalStability
         public bool IsBuilt
         {
             get { return (bool)GetValue(IsBuiltProperty); }
-            set { SetValue(IsBuiltProperty, value); }
+            private set { SetValue(IsBuiltProperty, value); }
         }
 
         /// <summary> Обнуляем счётчик количества </summary>
@@ -61,11 +70,20 @@ namespace GraphLabs.Tasks.ExternalStability
             _count = 0;
         }
 
-        /// <summary> Ctor. </summary>
-        public SccRowViewModel(ObservableCollection<IVertex> vertices)
+        private const string SccNameDelimiter = ", ";
+
+        
+        private static string BuildSccName(IEnumerable<IVertex> vertices)
+         {
+            return string.Join(SccNameDelimiter, vertices.Select(v => v.Name).OrderBy(s => s));
+         }
+
+    /// <summary> Ctor. </summary>
+    public SccRowViewModel(ObservableCollection<IVertex> vertices)
         {
             Number = ++_count;
             VerticesSet = vertices;
+            VerticesView = BuildSccName(vertices);
             IsBuilt = false;
         }
         

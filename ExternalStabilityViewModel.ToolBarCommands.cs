@@ -38,7 +38,7 @@ namespace GraphLabs.Tasks.ExternalStability
                         VertexClickCmd = new DelegateCommand(
                             o => SelectRMouseClick((IVertex) o),
                             o => true);
-                        _state = State.SetDES;
+                        _state = State.SetDes;
                         IsMouseVerticesMovingEnabled = false;
                     }
                     
@@ -100,20 +100,21 @@ namespace GraphLabs.Tasks.ExternalStability
                     switch (_task)
                     {
                         case Task.t11:
-                            checkMatrix();
+                            CheckMatrix();
                             break;
                         case Task.t12:
-                            checkMatrixforAghorithm();
+                            CheckMatrixforAghorithm();
                             break;
                         case Task.t2:
                             MessageBox.Show(string.Format(
                                 "Необходимо найти еще {0} множеств(о)\n внешней устойчивости", _countOfSes));
                             break;
                         case Task.t3:
-                            isthreedown();
+                            IsMinDS();
                             break;
                         case Task.end:
-                            
+                            UserActionsManager.ReportThatTaskFinished();
+                            TransferToNextTask();
                             break;
                     }
                 },

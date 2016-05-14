@@ -24,7 +24,7 @@ namespace GraphLabs.Tasks.ExternalStability
     /// <summary>
     /// Определение числа ошибок при обработке правильности заполнения матрицы
     /// </summary>
-    public partial class MatrixErrorCounter : ExternalStabilityViewModel
+    public class MatrixErrorCounter : ExternalStabilityViewModel
     {
 
         /// <summary>
@@ -34,7 +34,7 @@ namespace GraphLabs.Tasks.ExternalStability
         public void ShowMatrixErrors(int counter)
         {
                 short k = (short)((short)counter * 3);
-                string mistake = null;
+                string mistake = null; 
                 switch (counter)
                 {
                     case 1:
@@ -87,22 +87,21 @@ namespace GraphLabs.Tasks.ExternalStability
         public int CountOfErrorsMatrixforAlgorithm(ObservableCollection<MatrixRowViewModel<string>> m)
         {
             int counter = 0;
-
             for (int i = 0; i < GivenGraph.VerticesCount; i++)
             {
                 for (int j = 0; j < GivenGraph.VerticesCount; j++)
                 {
                     var directEdge = GivenGraph[GivenGraph.Vertices[i], GivenGraph.Vertices[j]];
-
-                    if ((i != j) && (m[i][j + 1] == "1") && (directEdge == null))
+                    var studentInput = (m[i][j + 1] ?? "").Trim();
+                    if ((i != j) && (studentInput == "1") && (directEdge == null))
                     {
                         counter++;
                     }
-                    if ((i != j) && (m[i][j + 1] != "1") && (directEdge != null))
+                    if ((i != j) && (studentInput != "1") && (directEdge != null))
                     {
                         counter++;
                     }
-                    if ((i == j) && (m[i][j + 1] != "1"))
+                    if ((i == j) && (studentInput != "1"))
                     {
                         counter++;
                     }

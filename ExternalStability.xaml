@@ -97,7 +97,12 @@
             <sdk:GridSplitter Grid.Row="0"
                               Grid.RowSpan="3"
                               Grid.Column="0"
-                              Width="1"/>
+                              Width="3"
+                              MaxWidth="500"/>
+            <sdk:GridSplitter Grid.Row="0"
+                              Grid.Column="0"
+                              Width="3"
+                              MaxHeight="500"/>
             <!-- Матрица-->
             <controls1:Matrix Name="Matrix"
                               Grid.Column="1"
@@ -128,7 +133,7 @@
                 <sdk:DataGrid.Columns>
                     <sdk:DataGridTextColumn Header="№" Binding="{Binding Path=Number, Mode=TwoWay}" Width="40" IsReadOnly="true" />
                     <sdk:DataGridCheckBoxColumn Header="Статус" Binding="{Binding Path=IsBuilt, Mode=TwoWay}" Width="40" IsReadOnly="false"/>
-                    <sdk:DataGridTextColumn Header="Множества внешней устойчивости" Binding="{Binding Path=VerticesSet, Mode=TwoWay}" Width="1*" IsReadOnly="true"/>
+                    <sdk:DataGridTextColumn Header="Множества внешней устойчивости" Binding="{Binding Path=VerticesView, Mode=TwoWay}" Width="1*" IsReadOnly="true"/>
                 </sdk:DataGrid.Columns>
             </sdk:DataGrid>
 
