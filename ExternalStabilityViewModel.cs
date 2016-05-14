@@ -114,14 +114,14 @@ namespace GraphLabs.Tasks.ExternalStability
         /// <summary> Выданный в задании граф </summary>
         public static readonly DependencyProperty GivenGraphProperty = DependencyProperty.Register(
            nameof(GivenGraph), 
-            typeof(IGraph), 
+            typeof(UndirectedGraph), 
             typeof(ExternalStabilityViewModel), 
             new PropertyMetadata(default(IGraph)));
 
         /// <summary> Выданный в задании граф </summary>
-        public IGraph GivenGraph
+        public UndirectedGraph GivenGraph
         {
-            get { return (IGraph)GetValue(GivenGraphProperty); }
+            get { return (UndirectedGraph)GetValue(GivenGraphProperty); }
             set { SetValue(GivenGraphProperty, value); }
         }
 
@@ -289,28 +289,38 @@ namespace GraphLabs.Tasks.ExternalStability
         protected override void OnTaskLoadingComlete(VariantDownloadedEventArgs e)
         {
             // Мы вызваны из другого потока. Поэтому работаем с UI-элементами через Dispatcher.
-            Dispatcher.BeginInvoke(() => {
-                GivenGraph = GraphSerializer.Deserialize(e.Data);
-                SccRows = new ObservableCollection<SccRowViewModel>();
-                SetDES = new ObservableCollection<IVertex>();
-                IsMouseVerticesMovingEnabled = true;
-
-                _task = Task.t11;
-
-                var matrix = new ObservableCollection<MatrixRowViewModel<string>>();
-                for (var i = 0; i < GivenGraph.VerticesCount; ++i)
+            Dispatcher.BeginInvoke(
+                () =>
                 {
-                    var row = new ObservableCollection<string> { i.ToString() };
-                    for (var j = 0; j < GivenGraph.VerticesCount; ++j)
-                        row.Add("0");
+                    try
+                    {
+                        GivenGraph = (UndirectedGraph) GraphSerializer.Deserialize(e.Data);
+                    }
+                    catch (InvalidCastException ex)
+                    {
+                        throw new InvalidCastException("Входной граф должен быть неориентированным.", ex);
+                    }
 
-                    row.CollectionChanged += RowChanged;
-                    matrix.Add(new MatrixRowViewModel<string>(row));
-                }
-                Matrix = matrix;
-            });
+                    SccRows = new ObservableCollection<SccRowViewModel>();
+                    SetDES = new ObservableCollection<IVertex>();
+                    IsMouseVerticesMovingEnabled = true;
+
+                    _task = Task.t11;
+
+                    var matrix = new ObservableCollection<MatrixRowViewModel<string>>();
+                    for (var i = 0; i < GivenGraph.VerticesCount; ++i)
+                    {
+                        var row = new ObservableCollection<string> {i.ToString()};
+                        for (var j = 0; j < GivenGraph.VerticesCount; ++j)
+                            row.Add("0");
+
+                        row.CollectionChanged += RowChanged;
+                        matrix.Add(new MatrixRowViewModel<string>(row));
+                    }
+                    Matrix = matrix;
+                });
         }
-        
+
         private ObservableCollection<string> _changedCollection;
         private NotifyCollectionChangedEventArgs _cellChangedArgs;
         private void RowChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -519,9 +529,9 @@ namespace GraphLabs.Tasks.ExternalStability
         public void IsMinDS()
         {
             var isAllMinimal = true;
-            //var MinDSCount = new MinDSEvaluator(GivenGraph);
-            //MinDSCount.Evaluate(GivenGraph);
-            //var RealSccRows = new List<SccRowViewModel>();
+            var MinDSCount = new MinDSEvaluator(GivenGraph);
+            MinDSCount.Evaluate(GivenGraph);
+            var RealSccRows = new List<SccRowViewModel>();
             //foreach (var minDs in MinDSCount.MinDS)
             //{
             //    var tempScc = new SccRowViewModel(minDs);

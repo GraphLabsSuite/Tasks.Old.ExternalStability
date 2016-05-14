@@ -11,17 +11,17 @@ namespace GraphLabs.Tasks.ExternalStability
         /// <summary>
         /// Минимальные доминирующие множества
         /// </summary>
-        public List<List<Vertex>> MinDS;
+        public List<List<Vertex>> MinDs;
 
         /// <summary>
         /// Максимальное число связей на вершину в графе
         /// </summary>
-        private int Delta;
+        private readonly int Delta;
 
         /// <summary>
         /// Константа - количество вершин графа
         /// </summary>
-        private int N;
+        private readonly int N;
 
         /// <summary>
         /// Создаёт начальную версию MinDS
@@ -33,7 +33,7 @@ namespace GraphLabs.Tasks.ExternalStability
             N = graph.VerticesCount;
             for (int i = 0; i < graph.VerticesCount; i++)
             {
-                MinDS[0].Add(graph.Vertices[i]);
+                MinDs[0].Add(graph.Vertices[i]);
                 int TempDelta = 0;
                 for (int j = 0; j < graph.VerticesCount; j++)
                 {
@@ -52,7 +52,7 @@ namespace GraphLabs.Tasks.ExternalStability
         {
             State firstStep = new State(graph);
             Process(firstStep, graph);
-            return MinDS;
+            return MinDs;
         }
 
         /// <summary>
@@ -183,15 +183,15 @@ namespace GraphLabs.Tasks.ExternalStability
                 }
                 else
                 {
-                    if (MinDS.Count > givenState.TempDS.Count)
+                    if (MinDs.Count > givenState.TempDS.Count)
                     {
-                        MinDS.Clear();
-                        MinDS.Add(givenState.TempDS);
+                        MinDs.Clear();
+                        MinDs.Add(givenState.TempDS);
                         return;
                     }
-                    if (MinDS.Count == givenState.TempDS.Count)
+                    if (MinDs.Count == givenState.TempDS.Count)
                     {
-                        MinDS.Add(givenState.TempDS);
+                        MinDs.Add(givenState.TempDS);
                         return;
                     }
                 }
@@ -205,7 +205,7 @@ namespace GraphLabs.Tasks.ExternalStability
                 else
                 {
                     var nExtra = (1 - givenState.N_dominated) / (Delta + 1);
-                    if ((nExtra + givenState.TempDS.Count) > MinDS.Count)
+                    if ((nExtra + givenState.TempDS.Count) > MinDs.Count)
                     {
                         return;
                     }
