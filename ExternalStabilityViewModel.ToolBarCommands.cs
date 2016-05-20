@@ -130,7 +130,7 @@ namespace GraphLabs.Tasks.ExternalStability
                 () =>
                 {
                     if (_task == Task.t2)
-                    isExternalStability();
+                    IsExternalStability();
                 },
                 () => _state == State.Nothing
                 )

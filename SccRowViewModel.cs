@@ -33,7 +33,7 @@ namespace GraphLabs.Tasks.ExternalStability
         /// <summary>
         /// Множество вершин
         /// </summary>
-        public ObservableCollection<IVertex> VerticesSet;  
+        public IList<Vertex> VerticesSet;  
 
         /// <summary> Множество вершин для вывода </summary>
         public static readonly DependencyProperty VerticesViewProperty = DependencyProperty.Register(
@@ -61,7 +61,7 @@ namespace GraphLabs.Tasks.ExternalStability
         public bool IsBuilt
         {
             get { return (bool)GetValue(IsBuiltProperty); }
-            private set { SetValue(IsBuiltProperty, value); }
+            set { SetValue(IsBuiltProperty, value); }
         }
 
         /// <summary> Обнуляем счётчик количества </summary>
@@ -73,18 +73,33 @@ namespace GraphLabs.Tasks.ExternalStability
         private const string SccNameDelimiter = ", ";
 
         
-        private static string BuildSccName(IEnumerable<IVertex> vertices)
+        private static string BuildSccName(IEnumerable<Vertex> vertices)
          {
             return string.Join(SccNameDelimiter, vertices.Select(v => v.Name).OrderBy(s => s));
          }
 
     /// <summary> Ctor. </summary>
-    public SccRowViewModel(ObservableCollection<IVertex> vertices)
+    public SccRowViewModel(IList<Vertex> vertices)
         {
             Number = ++_count;
             VerticesSet = vertices;
             VerticesView = BuildSccName(vertices);
             IsBuilt = false;
+        }
+
+        private static IList<Vertex> SccRowArrange(IList<Vertex> vertices)
+        {
+            var tempList = new List<Vertex>();
+            var i = 0;
+            while (i < vertices.Count)
+            {
+                var min = vertices.Count - 1;
+                for (var j = 0; j < vertices.Count; j++)
+                {
+                    
+                }
+            }
+            return tempList;
         }
         
 

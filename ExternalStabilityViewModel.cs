@@ -158,16 +158,16 @@ namespace GraphLabs.Tasks.ExternalStability
         /// </summary>
         public static readonly DependencyProperty SetDESProperty = DependencyProperty.Register(
             nameof(SetDES),
-            typeof(ObservableCollection<IVertex>),
+            typeof(ObservableCollection<Vertex>),
             typeof(ExternalStabilityViewModel),
-            new PropertyMetadata(default(ObservableCollection<IVertex>)));
+            new PropertyMetadata(default(ObservableCollection<Vertex>)));
         
         /// <summary>
         /// Множесто внешней устойчивости, выбираемое студентом
         /// </summary>
-        public ObservableCollection<IVertex> SetDES
+        public ObservableCollection<Vertex> SetDES
         {
-            get { return (ObservableCollection<IVertex>)GetValue(SetDESProperty); }
+            get { return (ObservableCollection<Vertex>)GetValue(SetDESProperty); }
             set { SetValue(SetDESProperty, value); }
         }
 
@@ -249,7 +249,7 @@ namespace GraphLabs.Tasks.ExternalStability
         private void SubscribeToViewEvents()
         {
             VertexClickCmd = new DelegateCommand(
-                            o => OnVertexClick((IVertex) o),
+                            o => OnVertexClick((Vertex) o),
                             o => true);
             //View.VertexClicked += (sender, args) => OnVertexClick(args.Control);
             View.VertexClicked += (sender, args) => VertexClickCmd.Execute(args.Control);
@@ -265,7 +265,7 @@ namespace GraphLabs.Tasks.ExternalStability
         }
 
         /// <summary> Клик по вершине </summary>
-        public void OnVertexClick(IVertex vertex)
+        public void OnVertexClick(Vertex vertex)
         {
             UserActionsManager.RegisterInfo(string.Format("Клик по вершине [{0}]", vertex.Name));
         }
@@ -302,7 +302,7 @@ namespace GraphLabs.Tasks.ExternalStability
                     }
 
                     SccRows = new ObservableCollection<SccRowViewModel>();
-                    SetDES = new ObservableCollection<IVertex>();
+                    SetDES = new ObservableCollection<Vertex>();
                     IsMouseVerticesMovingEnabled = true;
 
                     _task = Task.t11;
@@ -337,10 +337,28 @@ namespace GraphLabs.Tasks.ExternalStability
         private void CheckMatrix()
         {
             var counter = new MatrixErrorCounter();
-            var amount = counter.CountOfErrorsMatrix(Matrix);
+            var amount = counter.CountOfErrorsMatrix(Matrix, GivenGraph);
             if (amount > 0)
             {
-                counter.ShowMatrixErrors(amount);
+                short k = (short) ((short) amount*3);
+                string mistake = null;
+                switch (amount)
+                {
+                    case 1:
+                        mistake = "Найдена " + amount + " ошибка";
+                        break;
+                    case 2:
+                    case 3:
+                    case 4:
+                        mistake = "Найдено " + amount + " ошибки";
+                        break;
+                    default:
+                        mistake = "Найдено " + amount + " ошибок";
+                        break;
+                }
+
+                UserActionsManager.RegisterMistake(mistake, k);
+
             }
             else
             {
@@ -354,10 +372,27 @@ namespace GraphLabs.Tasks.ExternalStability
         private void CheckMatrixforAghorithm()
         {
             var counter = new MatrixErrorCounter();
-            int amount = counter.CountOfErrorsMatrixforAlgorithm(Matrix);
+            int amount = counter.CountOfErrorsMatrixforAlgorithm(Matrix, GivenGraph);
             if (amount > 0)
             {
-                counter.ShowMatrixErrors(amount);
+                short k = (short)((short)amount * 3);
+                string mistake = null;
+                switch (amount)
+                {
+                    case 1:
+                        mistake = "Найдена " + amount + " ошибка";
+                        break;
+                    case 2:
+                    case 3:
+                    case 4:
+                        mistake = "Найдено " + amount + " ошибки";
+                        break;
+                    default:
+                        mistake = "Найдено " + amount + " ошибок";
+                        break;
+                }
+
+                UserActionsManager.RegisterMistake(mistake, k);
             }
             else
             {
@@ -422,11 +457,11 @@ namespace GraphLabs.Tasks.ExternalStability
         /// Проверка выбранного множества вершин на соответствие множеству внешней устойчивости
         /// </summary>
         /// <returns></returns>
-        private bool isExternalStability()
+        private bool IsExternalStability()
         {
             var isExternal = true;
             var isAdded = false;
-            var extendedSetofVertex = new Collection<IVertex>();
+            var extendedSetofVertex = new Collection<Vertex>();
 
             foreach (var vertex in SetDES)
             {
@@ -479,7 +514,7 @@ namespace GraphLabs.Tasks.ExternalStability
                 //Поиск выбранного множества в списке всех множеств ???
                 foreach (var sccRow in SccRows)
                 {
-                    if (sccRow.VerticesSet == sccStr.VerticesSet)
+                    if (sccRow.VerticesView == sccStr.VerticesView)
                     {
                         isAdded = true;
                         break;
@@ -490,8 +525,8 @@ namespace GraphLabs.Tasks.ExternalStability
                 //Проверка на уже добавленность выбранного множества
                 if (isAdded)
                 {
-                    MessageBox.Show("Множество "+sccStr.VerticesSet+" уже добавлено.");
-                    UserActionsManager.RegisterMistake("Множество " + sccStr.VerticesSet + " уже добавлено.",2);
+                    MessageBox.Show("Множество "+sccStr.VerticesView +" уже добавлено.");
+                    UserActionsManager.RegisterMistake("Множество " + sccStr.VerticesView + " уже добавлено.",2);
                 }
                 else
                 {
@@ -528,39 +563,73 @@ namespace GraphLabs.Tasks.ExternalStability
         /// </summary>
         public void IsMinDS()
         {
-            var isAllMinimal = true;
-            var MinDSCount = new MinDSEvaluator(GivenGraph);
-            MinDSCount.Evaluate(GivenGraph);
-            var RealSccRows = new List<SccRowViewModel>();
-            //foreach (var minDs in MinDSCount.MinDS)
-            //{
-            //    var tempScc = new SccRowViewModel(minDs);
-            //    RealSccRows.Add(tempScc);
-            //}
-            //TUT PROBLEMY S TIPAMI
-
-            //Далее поиск и сравнение найденных по алгоритму множеств с теми, что выбрал студент (пока не переделывал)
+            var minDsCount = new MinDSEvaluator(GivenGraph);
+            minDsCount.Evaluate(GivenGraph);
+            var realSccRows = new List<SccRowViewModel>();
+            foreach (var minDs in minDsCount.MinDs)
+            {
+                var tempScc = new SccRowViewModel(minDs);
+                realSccRows.Add(tempScc);
+            }
+ 
+            var numofChosen = 0;
             foreach (var sccRow in SccRows)
             {
-                if ( (sccRow.IsBuilt == true) && (sccRow.VerticesSet.Count > 6))
+                if (sccRow.IsBuilt)
                 {
-                   
-                    isAllMinimal = false;
-                }
-
-                if ((sccRow.IsBuilt == false) && (sccRow.VerticesSet.Count < 7))
-                {
-                    isAllMinimal = false;
+                    numofChosen++;
                 }
             }
-            if (isAllMinimal)
+            foreach (var realSccRow in realSccRows)
             {
-                MessageBox.Show("Задание выполнено.");
+                var tempSize = 0;
+                foreach (var sccRow in SccRows)
+                {
+                    if (sccRow.IsBuilt)
+                    {
+                        for (int i = 0; i < realSccRow.VerticesSet.Count; i++)
+                        {
+                            for (int j = 0; j < sccRow.VerticesSet.Count; j++)
+                            {
+                                if (realSccRow.VerticesSet[i].Name == sccRow.VerticesSet[j].Name) tempSize++;
+                                if (tempSize == realSccRow.VerticesSet.Count)
+                                {
+                                    realSccRow.IsBuilt = true;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            var flag = true;
+            var k = "";
+            var numOfBuilt = 0;
+            foreach (var realSccRow in realSccRows)
+            {
+                if (realSccRow.IsBuilt)
+                {
+                    numOfBuilt++;
+                }
+                else
+                {
+                    flag = false;
+                    k = k + realSccRow.VerticesView;
+                }
+            }
+            if (numOfBuilt != numofChosen)
+            {
+                flag = false;
+            }
+
+            if (flag)
+            {
+                MessageBox.Show("Задание выполнено. Нажмите ещё раз кнопку ОК для выхода.");
                 _task = Task.end;
             }
             else
             {
-                UserActionsManager.RegisterMistake("Выбранные множество/а не являются минимальными./Выбранны не все множества", 10);
+                k = "Выбранные множество/n не являются минимальными./n Выбранны не все множества { " + k + " }"; 
+                UserActionsManager.RegisterMistake(k, 10);
             }
         }
 

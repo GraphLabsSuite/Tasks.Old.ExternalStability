@@ -61,17 +61,17 @@ namespace GraphLabs.Tasks.ExternalStability
         /// <summary>
         /// Текущее доминирующее множество
         /// </summary>
-        public List<Vertex> TempDS { get; private set; }
+        public List<Vertex> TempDs { get; private set; }
 
         /// <summary>
         /// Количество доминируемых вершин
         /// </summary>
-        public int N_dominated { get; private set; }
+        public int NDominated { get; set; }
 
         /// <summary>
         /// Уровень рекурсии
         /// </summary>
-        public int Level { get; private set; }
+        public int Level { get; set; }
 
         /// <summary>
         /// Создаёт копию объекта для рекурсии
@@ -88,29 +88,36 @@ namespace GraphLabs.Tasks.ExternalStability
         /// <param name="graph"></param>
         public State (UndirectedGraph graph)
         {
-            TempDS = new List<Vertex>();
+            TempDs = new List<Vertex>();
+            VertexColor = new Dictionary<Vertex, StateColor>();
+            VertexDominatedNumber = new Dictionary<Vertex, int>();
+            VertexNeighbors = new Dictionary<Vertex, List<Vertex>>();
+            VertexPossibleDominatingNumber = new Dictionary<Vertex, int>();
             Level = 0;
-            foreach (Vertex vertex in graph.Vertices)
+            foreach (var vertex in graph.Vertices)
             {
                 VertexColor.Add(vertex, StateColor.WHITE);
                 VertexDominatedNumber.Add(vertex, 0);
-                List<Vertex> TempNeighbors = null;
+                var tempNeighbors = new List<Vertex>();
                 for (int i = 0; i < graph.VerticesCount; i++)
                 {
-                    if (graph[graph.Vertices[i], vertex] != null) TempNeighbors.Add(graph.Vertices[i]);
+                    if (graph[graph.Vertices[i], vertex] != null) tempNeighbors.Add(graph.Vertices[i]);
                 }
-                VertexNeighbors.Add(vertex, TempNeighbors);
-                VertexPossibleDominatingNumber.Add(vertex, TempNeighbors.Count);
+                VertexNeighbors.Add(vertex, tempNeighbors);
+                VertexPossibleDominatingNumber.Add(vertex, tempNeighbors.Count);
             }
-            N_dominated = 0;
+            NDominated = 0;
         }
 
         private State(State prototype)
         {
             this.Level = prototype.Level;
-            this.N_dominated = prototype.N_dominated;
-            this.TempDS = prototype.TempDS;
+            this.NDominated = prototype.NDominated;
+            this.TempDs = new List<Vertex>(prototype.TempDs);
+            this.VertexDominatedNumber = new Dictionary<Vertex, int>(prototype.VertexDominatedNumber);
             this.VertexColor = new Dictionary<Vertex, StateColor>(prototype.VertexColor);
+            this.VertexNeighbors = new Dictionary<Vertex, List<Vertex>>(prototype.VertexNeighbors);
+            this.VertexPossibleDominatingNumber = new Dictionary<Vertex, int>(prototype.VertexPossibleDominatingNumber);
             //...
         }
     }

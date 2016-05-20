@@ -24,7 +24,7 @@ namespace GraphLabs.Tasks.ExternalStability
     /// <summary>
     /// Определение числа ошибок при обработке правильности заполнения матрицы
     /// </summary>
-    public class MatrixErrorCounter : ExternalStabilityViewModel
+    public class MatrixErrorCounter
     {
 
         /// <summary>
@@ -50,15 +50,16 @@ namespace GraphLabs.Tasks.ExternalStability
                         break;
                 }
 
-                UserActionsManager.RegisterMistake(mistake, k);
+                //UserActionsManager.RegisterMistake(mistake, k);
         }
 
         /// <summary>
         /// Проверка правильности заполнения матрицы смежности
         /// </summary>
         /// <param name="m"></param>
+        /// <param name="givenGraph"></param>
         /// <returns></returns>
-        public int CountOfErrorsMatrix(ObservableCollection<MatrixRowViewModel<string>> m)
+        public int CountOfErrorsMatrix(ObservableCollection<MatrixRowViewModel<string>> m, UndirectedGraph givenGraph)
         {
             var counter = 0;
 
@@ -66,7 +67,7 @@ namespace GraphLabs.Tasks.ExternalStability
                 for (var j = 0; j < m.Count; j++)
                 {
                     var studentInput = (m[i][j + 1] ?? "").Trim();
-                    var directEdge = GivenGraph[GivenGraph.Vertices[i], GivenGraph.Vertices[j]];
+                    var directEdge = givenGraph[givenGraph.Vertices[i], givenGraph.Vertices[j]];
 
                     if (directEdge != null && studentInput != "1"
                         ||
@@ -83,15 +84,16 @@ namespace GraphLabs.Tasks.ExternalStability
         /// Проверка правильности заполнения модифицированной матрицы смежности
         /// </summary>
         /// <param name="m"></param>
+        /// <param name="givenGraph"></param>
         /// <returns></returns>
-        public int CountOfErrorsMatrixforAlgorithm(ObservableCollection<MatrixRowViewModel<string>> m)
+        public int CountOfErrorsMatrixforAlgorithm(ObservableCollection<MatrixRowViewModel<string>> m, UndirectedGraph givenGraph)
         {
             int counter = 0;
-            for (int i = 0; i < GivenGraph.VerticesCount; i++)
+            for (int i = 0; i < givenGraph.VerticesCount; i++)
             {
-                for (int j = 0; j < GivenGraph.VerticesCount; j++)
+                for (int j = 0; j < givenGraph.VerticesCount; j++)
                 {
-                    var directEdge = GivenGraph[GivenGraph.Vertices[i], GivenGraph.Vertices[j]];
+                    var directEdge = givenGraph[givenGraph.Vertices[i], givenGraph.Vertices[j]];
                     var studentInput = (m[i][j + 1] ?? "").Trim();
                     if ((i != j) && (studentInput == "1") && (directEdge == null))
                     {
