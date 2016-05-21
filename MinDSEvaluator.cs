@@ -1,5 +1,6 @@
 ﻿using GraphLabs.Graphs;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace GraphLabs.Tasks.ExternalStability
 {
@@ -96,7 +97,7 @@ namespace GraphLabs.Tasks.ExternalStability
         /// <returns></returns>
         private bool CanVerticesBeCovered(State state)
         {
-            foreach (KeyValuePair<Vertex, int> keyValue in state.VertexPossibleDominatingNumber)
+            foreach (var keyValue in state.VertexPossibleDominatingNumber)
             {
                 int vertDomNum;
                 state.VertexPossibleDominatingNumber.TryGetValue(keyValue.Key, out vertDomNum);
@@ -111,7 +112,7 @@ namespace GraphLabs.Tasks.ExternalStability
         private int RecountNDominated(State state)
         {
             int result = 0;
-            foreach (KeyValuePair<Vertex, int> keyValue in state.VertexDominatedNumber)
+            foreach (var keyValue in state.VertexDominatedNumber)
             {
                 if (keyValue.Value > 0)
                 {
@@ -204,8 +205,7 @@ namespace GraphLabs.Tasks.ExternalStability
             else
             {
                 var givenVertex = graph.Vertices[givenState.Level];
-                givenState.VertexColor.Remove(givenVertex);
-                givenState.VertexColor.Add(givenVertex, StateColor.BLUE);
+                givenState.VertexColor[givenVertex] = StateColor.BLUE;
                 BlueVertexRecount(givenState, givenVertex);
                 var isVertexCovered = CanVertexBeCovered(givenVertex, givenState);
                 if (isVertexCovered)
@@ -214,8 +214,7 @@ namespace GraphLabs.Tasks.ExternalStability
                     newState.Level++;
                     Process(newState, graph);
                 }
-                givenState.VertexColor.Remove(givenVertex);
-                givenState.VertexColor.Add(givenVertex, StateColor.RED);
+                givenState.VertexColor[givenVertex] = StateColor.RED;
                 RedVertexRecount(givenState, givenVertex);
                 if (givenState.NDominated == _n)
                 {
@@ -233,8 +232,8 @@ namespace GraphLabs.Tasks.ExternalStability
                 }
                 else
                 {
-                    var nExtra = (_n - givenState.NDominated) / (_delta + 1);
-                    if ((nExtra + givenState.TempDs.Count) > MinDs.Count)
+                    var nExtra = (double)(_n - givenState.NDominated) / (_delta + 1);
+                    if ((nExtra + givenState.TempDs.Count) > MinDs.First().Count)
                     {
                         return;
                     }
