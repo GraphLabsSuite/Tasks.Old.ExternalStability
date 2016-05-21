@@ -67,10 +67,8 @@ namespace GraphLabs.Tasks.ExternalStability
         /// <returns></returns>
         private bool CanVertexBeCovered(Vertex vertex, State state)
         {
-            List<Vertex> neighbors;
-            state.VertexNeighbors.TryGetValue(vertex, out neighbors);
-            int vertDomNum;
-            state.VertexPossibleDominatingNumber.TryGetValue(vertex, out vertDomNum);
+            List<Vertex> neighbors = state.VertexNeighbors[vertex];
+            var vertDomNum = state.VertexPossibleDominatingNumber[vertex];
             if (vertDomNum == 0)
             {
                 return false;
@@ -79,9 +77,8 @@ namespace GraphLabs.Tasks.ExternalStability
             {
                 foreach (var neigh in neighbors)
                 {
-                    int vertNeighDomNum;
-                    state.VertexPossibleDominatingNumber.TryGetValue(neigh, out vertNeighDomNum);
-                    if (vertNeighDomNum == 0)
+                    var neighVertDomNum = state.VertexPossibleDominatingNumber[neigh];
+                    if (neighVertDomNum == 0)
                     {
                         return false;
                     }
@@ -99,9 +96,7 @@ namespace GraphLabs.Tasks.ExternalStability
         {
             foreach (var keyValue in state.VertexPossibleDominatingNumber)
             {
-                int vertDomNum;
-                state.VertexPossibleDominatingNumber.TryGetValue(keyValue.Key, out vertDomNum);
-                if (vertDomNum == 0)
+                if (keyValue.Value == 0)
                 {
                     return false;
                 }
@@ -129,8 +124,7 @@ namespace GraphLabs.Tasks.ExternalStability
             int temp3;
             state.VertexPossibleDominatingNumber.TryGetValue(givenVertex, out temp3);
             temp3--;
-            state.VertexPossibleDominatingNumber.Remove(givenVertex);
-            state.VertexPossibleDominatingNumber.Add(givenVertex, temp3);
+            state.VertexPossibleDominatingNumber[givenVertex] = temp3;
             if (neighbors != null)
             {
                 foreach (var vert in neighbors)
@@ -138,8 +132,7 @@ namespace GraphLabs.Tasks.ExternalStability
                     int temp;
                     state.VertexPossibleDominatingNumber.TryGetValue(vert, out temp);
                     temp--;
-                    state.VertexPossibleDominatingNumber.Remove(vert);
-                    state.VertexPossibleDominatingNumber.Add(vert, temp);
+                    state.VertexPossibleDominatingNumber[vert] = temp;
                 }
             }
         }
@@ -149,13 +142,11 @@ namespace GraphLabs.Tasks.ExternalStability
             int temp3;
             state.VertexPossibleDominatingNumber.TryGetValue(givenVertex, out temp3);
             temp3++;
-            state.VertexPossibleDominatingNumber.Remove(givenVertex);
-            state.VertexPossibleDominatingNumber.Add(givenVertex, temp3);
+            state.VertexPossibleDominatingNumber[givenVertex] = temp3;
             int temp4;
             state.VertexDominatedNumber.TryGetValue(givenVertex, out temp4);
             temp4++;
-            state.VertexDominatedNumber.Remove(givenVertex);
-            state.VertexDominatedNumber.Add(givenVertex, temp4);
+            state.VertexDominatedNumber[givenVertex] = temp4;
             foreach (var keyValue in state.VertexNeighbors)
             {
                 if (keyValue.Key.Equals(givenVertex))
@@ -165,13 +156,11 @@ namespace GraphLabs.Tasks.ExternalStability
                         int temp;
                         state.VertexPossibleDominatingNumber.TryGetValue(vert, out temp);
                         temp++;
-                        state.VertexPossibleDominatingNumber.Remove(vert);
-                        state.VertexPossibleDominatingNumber.Add(vert, temp);
+                        state.VertexPossibleDominatingNumber[vert] = temp;
                         int temp2;
                         state.VertexDominatedNumber.TryGetValue(vert, out temp2);
                         temp2++;
-                        state.VertexDominatedNumber.Remove(vert);
-                        state.VertexDominatedNumber.Add(vert, temp2);
+                        state.VertexDominatedNumber[vert] = temp2;
                     }
                 }
             }
@@ -183,19 +172,15 @@ namespace GraphLabs.Tasks.ExternalStability
             if (givenState.Level == _n)
             {
                 var isAllVerticesCovered = CanVerticesBeCovered(givenState);
-                if (isAllVerticesCovered == false)
+                if (isAllVerticesCovered)
                 {
-                    return;
-                }
-                else
-                {
-                    if (MinDs.Count > givenState.TempDs.Count)
+                    if (MinDs.First().Count > givenState.TempDs.Count)
                     {
                         MinDs.Clear();
                         MinDs.Add(givenState.TempDs);
                         return;
                     }
-                    if (MinDs.Count == givenState.TempDs.Count)
+                    if (MinDs.First().Count == givenState.TempDs.Count)
                     {
                         MinDs.Add(givenState.TempDs);
                         return;
@@ -215,16 +200,17 @@ namespace GraphLabs.Tasks.ExternalStability
                     Process(newState, graph);
                 }
                 givenState.VertexColor[givenVertex] = StateColor.RED;
+                givenState.TempDs.Add(givenVertex);
                 RedVertexRecount(givenState, givenVertex);
                 if (givenState.NDominated == _n)
                 {
-                    if (MinDs.Count > givenState.TempDs.Count)
+                    if (MinDs.First().Count > givenState.TempDs.Count)
                     {
                         MinDs.Clear();
                         MinDs.Add(givenState.TempDs);
                         return;
                     }
-                    if (MinDs.Count == givenState.TempDs.Count)
+                    if (MinDs.First().Count == givenState.TempDs.Count)
                     {
                         MinDs.Add(givenState.TempDs);
                         return;
@@ -239,7 +225,6 @@ namespace GraphLabs.Tasks.ExternalStability
                     }
                     else
                     {
-                        givenState.TempDs.Add(givenVertex);
                         var newState = givenState.Clone();
                         newState.Level++;
                         Process(newState, graph);

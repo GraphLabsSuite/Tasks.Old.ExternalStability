@@ -104,7 +104,7 @@ namespace GraphLabs.Tasks.ExternalStability
                     if (graph[graph.Vertices[i], vertex] != null) tempNeighbors.Add(graph.Vertices[i]);
                 }
                 VertexNeighbors.Add(vertex, tempNeighbors);
-                VertexPossibleDominatingNumber.Add(vertex, tempNeighbors.Count);
+                VertexPossibleDominatingNumber.Add(vertex, tempNeighbors.Count + 1);
             }
             NDominated = 0;
         }

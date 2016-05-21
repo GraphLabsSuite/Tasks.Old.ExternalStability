@@ -561,7 +561,7 @@ namespace GraphLabs.Tasks.ExternalStability
         /// <summary>
         /// Проверка выбранного множества на соответствие минимальному множеству внешней устойчивости
         /// </summary>
-        public void IsMinDS()
+        private void IsMinDS()
         {
             var minDsCount = new MinDSEvaluator(GivenGraph);
             minDsCount.Evaluate(GivenGraph);
@@ -628,7 +628,7 @@ namespace GraphLabs.Tasks.ExternalStability
             }
             else
             {
-                k = "Выбранные множество/n не являются минимальными./n Выбранны не все множества { " + k + " }"; 
+                k = "Выбранные множества не являются минимальными. Выбраны не все множества" + k + ""; 
                 UserActionsManager.RegisterMistake(k, 10);
             }
         }
