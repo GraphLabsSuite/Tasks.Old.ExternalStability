@@ -53,7 +53,9 @@ namespace GraphLabs.Tasks.ExternalStability
         /// <summary>
         /// Требуемое число нахождения множеств внешней устойчивости
         /// </summary>
-        private short _countOfSes = 5;
+        private short _countOfSes = DsCount;
+
+        private const short DsCount = 5;
 
         /// <summary> Текущее состояние </summary>
         private State _state;
@@ -357,7 +359,11 @@ namespace GraphLabs.Tasks.ExternalStability
                         break;
                 }
 
-                UserActionsManager.RegisterMistake(mistake, k);
+                if (UserActionsManager.Score > k) UserActionsManager.RegisterMistake(mistake, k);
+                else if (UserActionsManager.Score > 0)
+                {
+                    UserActionsManager.RegisterMistake(mistake,(short) UserActionsManager.Score);
+                }
 
             }
             else
@@ -392,7 +398,11 @@ namespace GraphLabs.Tasks.ExternalStability
                         break;
                 }
 
-                UserActionsManager.RegisterMistake(mistake, k);
+                if (UserActionsManager.Score > k) UserActionsManager.RegisterMistake(mistake, k);
+                else if (UserActionsManager.Score > 0)
+                {
+                    UserActionsManager.RegisterMistake(mistake, (short)UserActionsManager.Score);
+                }
             }
             else
             {
@@ -505,7 +515,14 @@ namespace GraphLabs.Tasks.ExternalStability
                     MessageBox.Show("Задание 2 пройдено.\n Вы перешли к заданию 3.\n Ознакомьтесь со справкой.<?>");
                     _task = Task.t3;
                 }
-                UserActionsManager.RegisterInfo(string.Format(@"Множество добавлено. Осталось {0} множеств(о).",_countOfSes));
+                if (UserActionsManager.Score > _countOfSes)
+                    UserActionsManager.RegisterInfo(string.Format(@"Множество добавлено. Осталось {0} множеств(о).",
+                        _countOfSes));
+                else if (UserActionsManager.Score > 0)
+                {
+                    UserActionsManager.RegisterInfo(string.Format(@"Множество добавлено. Осталось {0} множеств(о).",
+                        UserActionsManager.Score));
+                }
 
 
 
@@ -526,7 +543,12 @@ namespace GraphLabs.Tasks.ExternalStability
                 if (isAdded)
                 {
                     MessageBox.Show("Множество "+sccStr.VerticesView +" уже добавлено.");
-                    UserActionsManager.RegisterMistake("Множество " + sccStr.VerticesView + " уже добавлено.",2);
+                    if (UserActionsManager.Score > 2)
+                        UserActionsManager.RegisterMistake("Множество " + sccStr.VerticesView + " уже добавлено.", 2);
+                    else if (UserActionsManager.Score > 0)
+                    {
+                        UserActionsManager.RegisterMistake("Множество " + sccStr.VerticesView + " уже добавлено.", (short) UserActionsManager.Score);
+                    }
                 }
                 else
                 {
@@ -553,7 +575,13 @@ namespace GraphLabs.Tasks.ExternalStability
             }
             else
             {
-                UserActionsManager.RegisterMistake("Это множество вершин не является внешне устойчивым.",10);
+                if (UserActionsManager.Score > 10)
+                    UserActionsManager.RegisterMistake("Это множество вершин не является внешне устойчивым.", 10);
+                else if (UserActionsManager.Score > 0)
+                {
+                    UserActionsManager.RegisterMistake("Это множество вершин не является внешне устойчивым.",
+                        (short) UserActionsManager.Score);
+                }
             }
             return true;
         }
@@ -604,6 +632,7 @@ namespace GraphLabs.Tasks.ExternalStability
             var flag = true;
             var k = "";
             var numOfBuilt = 0;
+            var m = 0;
             foreach (var realSccRow in realSccRows)
             {
                 if (realSccRow.IsBuilt)
@@ -614,6 +643,7 @@ namespace GraphLabs.Tasks.ExternalStability
                 {
                     flag = false;
                     k = k + realSccRow.VerticesView;
+                    m = (short) m + 5;
                 }
             }
             if (numOfBuilt != numofChosen)
@@ -628,8 +658,17 @@ namespace GraphLabs.Tasks.ExternalStability
             }
             else
             {
-                k = "Выбранные множества не являются минимальными. Выбраны не все множества" + k + ""; 
-                UserActionsManager.RegisterMistake(k, 10);
+                k = "Выбранные множества не являются минимальными. Выбраны не все множества" + k + "";
+                if (UserActionsManager.Score > m) UserActionsManager.RegisterMistake(k, (short) m);
+                else if (UserActionsManager.Score > 0)
+                {
+                    UserActionsManager.RegisterMistake(k, (short) UserActionsManager.Score);
+                }
+                _task = Task.t2;
+                SccRows = new ObservableCollection<SccRowViewModel>();
+                SetDES = new ObservableCollection<Vertex>();
+                _countOfSes = DsCount;
+
             }
         }
 
