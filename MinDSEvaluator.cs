@@ -167,6 +167,9 @@ namespace GraphLabs.Tasks.ExternalStability
             state.NDominated = RecountNDominated(state);
         }
 
+
+
+
         private void Process(State givenState, UndirectedGraph graph)
         {
             if (givenState.Level == _n)

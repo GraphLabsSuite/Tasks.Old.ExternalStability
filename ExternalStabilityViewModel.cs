@@ -4,19 +4,14 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
-using System.Security;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using GraphLabs.Common;
-using GraphLabs.Common.UserActionsRegistrator;
 using GraphLabs.CommonUI;
 using GraphLabs.CommonUI.Controls.ViewModels;
 using GraphLabs.Graphs;
 using GraphLabs.Graphs.DataTransferObjects.Converters;
-using GraphLabs.Utils;
-using GraphLabs.Utils.Services;
 using GraphLabs.Common.Utils;
 
 namespace GraphLabs.Tasks.ExternalStability
@@ -36,15 +31,15 @@ namespace GraphLabs.Tasks.ExternalStability
         public enum Task
         {
             /// <summary>Заполнение матрицы </summary>
-            t11,
+            TaskAdjacencyMatrix,
             /// <summary> Изменение матрицы для алгоритма нахождения ES </summary>
-            t12,
+            TaskModifiedAdjMatrix,
             /// <summary> Добавление множеств ES </summary>
-            t2,
+            TaskSelectDomSets,
             /// <summary> Вывод о числе внешней устойчивости </summary>
-            t3,
+            TaskFindMinDomSets,
             /// <summary>Задание выполнено</summary>
-            end
+            TaskEnd
         }
 
         /// <summary> Текущее задание </summary>
@@ -64,8 +59,8 @@ namespace GraphLabs.Tasks.ExternalStability
         private readonly Version[] _allowedGeneratorVersions = new[] {  new Version(1, 0) };
 
 
-        private readonly Color defaultBorderColor     = Color.FromArgb(255, 50, 133, 144);
-        private readonly Color defaultBackgroundColor = Color.FromArgb(250, 207, 207, 207);
+        private readonly Color _defaultBorderColor     = Color.FromArgb(255, 50, 133, 144);
+        private readonly Color _defaultBackgroundColor = Color.FromArgb(250, 207, 207, 207);
        
 
         #region Public свойства вьюмодели
@@ -307,7 +302,7 @@ namespace GraphLabs.Tasks.ExternalStability
                     SetDES = new ObservableCollection<Vertex>();
                     IsMouseVerticesMovingEnabled = true;
 
-                    _task = Task.t11;
+                    _task = Task.TaskAdjacencyMatrix;
 
                     var matrix = new ObservableCollection<MatrixRowViewModel<string>>();
                     for (var i = 0; i < GivenGraph.VerticesCount; ++i)
@@ -369,7 +364,7 @@ namespace GraphLabs.Tasks.ExternalStability
             else
             {
                 MessageBox.Show("Задание 1.1 пройдено.\n Вы перешли к заданию 1.2.\n Ознакомьтесь со справкой.<?>");
-                _task = Task.t12;
+                _task = Task.TaskModifiedAdjMatrix;
             }
         }
 
@@ -411,7 +406,7 @@ namespace GraphLabs.Tasks.ExternalStability
                 {
                     Matrix[i].IsEnabled = false;
                 }
-                _task = Task.t2;
+                _task = Task.TaskSelectDomSets;
             }
         }
 
@@ -424,16 +419,16 @@ namespace GraphLabs.Tasks.ExternalStability
             // Если вершину уже добавили - то удаляем.
             if (SetDES.Contains(vertex))
             {
-                VertVisCol[Convert.ToInt32(vertex.Name)].Background = new SolidColorBrush(defaultBackgroundColor);
+                VertVisCol[Convert.ToInt32(vertex.Name)].Background = new SolidColorBrush(_defaultBackgroundColor);
                 Matrix[Convert.ToInt32(vertex.Name)].Background = new SolidColorBrush(Color.FromArgb(250, 239, 240, 250));
-                VertVisCol[Convert.ToInt32(vertex.Name)].BorderBrush = new SolidColorBrush(defaultBorderColor);
+                VertVisCol[Convert.ToInt32(vertex.Name)].BorderBrush = new SolidColorBrush(_defaultBorderColor);
                 
                 SetDES.Remove(vertex);
 
                 foreach (var edge in EdgeVisCol)
                 {
                     if ((edge.Vertex1.Name == vertex.Name) || (edge.Vertex2.Name == vertex.Name))
-                        edge.Stroke = new SolidColorBrush(defaultBorderColor);
+                        edge.Stroke = new SolidColorBrush(_defaultBorderColor);
                 }
 
                 foreach (var vert in SetDES)
@@ -513,7 +508,7 @@ namespace GraphLabs.Tasks.ExternalStability
                 if (_countOfSes == 0)
                 {
                     MessageBox.Show("Задание 2 пройдено.\n Вы перешли к заданию 3.\n Ознакомьтесь со справкой.<?>");
-                    _task = Task.t3;
+                    _task = Task.TaskFindMinDomSets;
                 }
                 if (UserActionsManager.Score > _countOfSes)
                     UserActionsManager.RegisterInfo(string.Format(@"Множество добавлено. Осталось {0} множеств(о).",
@@ -561,15 +556,15 @@ namespace GraphLabs.Tasks.ExternalStability
                 //Визуальное изменение выбранных элементов
                 foreach (var vertex in VertVisCol)
                 {
-                    vertex.BorderBrush = new SolidColorBrush(defaultBorderColor);
-                    vertex.Background = new SolidColorBrush(defaultBackgroundColor);
+                    vertex.BorderBrush = new SolidColorBrush(_defaultBorderColor);
+                    vertex.Background = new SolidColorBrush(_defaultBackgroundColor);
                     Matrix[Convert.ToInt32(vertex.Name)].Background = new SolidColorBrush(Color.FromArgb(250, 239, 240, 250));
                 }
 
 
                 foreach (var edge in EdgeVisCol)
                 {
-                    edge.Stroke = new SolidColorBrush(defaultBorderColor);
+                    edge.Stroke = new SolidColorBrush(_defaultBorderColor);
                 }
 
             }
@@ -609,18 +604,18 @@ namespace GraphLabs.Tasks.ExternalStability
                 }
             }
             foreach (var realSccRow in realSccRows)
-            {
-                var tempSize = 0;
+            {   
                 foreach (var sccRow in SccRows)
                 {
                     if (sccRow.IsBuilt)
                     {
+                        var tempSize = 0;
                         for (int i = 0; i < realSccRow.VerticesSet.Count; i++)
                         {
                             for (int j = 0; j < sccRow.VerticesSet.Count; j++)
                             {
                                 if (realSccRow.VerticesSet[i].Name == sccRow.VerticesSet[j].Name) tempSize++;
-                                if (tempSize == realSccRow.VerticesSet.Count)
+                                if ((tempSize == realSccRow.VerticesSet.Count) && (realSccRow.VerticesSet.Count == sccRow.VerticesSet.Count))
                                 {
                                     realSccRow.IsBuilt = true;
                                 }
@@ -630,6 +625,7 @@ namespace GraphLabs.Tasks.ExternalStability
                 }
             }
             var flag = true;
+            var flag2 = true;
             var k = "";
             var numOfBuilt = 0;
             var m = 0;
@@ -643,18 +639,32 @@ namespace GraphLabs.Tasks.ExternalStability
                 {
                     flag = false;
                     k = k + realSccRow.VerticesView;
-                    m = (short) m + 5;
+                    m = m + 5;
                 }
             }
             if (numOfBuilt != numofChosen)
             {
-                flag = false;
+                flag2 = false;
             }
 
-            if (flag)
+            if (flag && flag2)
             {
                 MessageBox.Show("Задание выполнено. Нажмите ещё раз кнопку ОК для выхода.");
-                _task = Task.end;
+                _task = Task.TaskEnd;
+            }
+            else if (!flag2)
+            {
+                k = "Выбранные множества не являются минимальными. Количество множеств не совпадает";
+                if (UserActionsManager.Score > 5) UserActionsManager.RegisterMistake(k, 5);
+                else if (UserActionsManager.Score > 0)
+                {
+                    UserActionsManager.RegisterMistake(k, (short) UserActionsManager.Score);
+                }
+                MessageBox.Show("Неправильно выбраны множества. Повторите выполнение 2 и 3 заданий.");
+                _task = Task.TaskSelectDomSets;
+                SccRows = new ObservableCollection<SccRowViewModel>();
+                SetDES = new ObservableCollection<Vertex>();
+                _countOfSes = DsCount;
             }
             else
             {
@@ -664,14 +674,12 @@ namespace GraphLabs.Tasks.ExternalStability
                 {
                     UserActionsManager.RegisterMistake(k, (short) UserActionsManager.Score);
                 }
-                _task = Task.t2;
+                MessageBox.Show("Неправильно выбраны множества. Повторите выполнение 2 и 3 заданий.");
+                _task = Task.TaskSelectDomSets;
                 SccRows = new ObservableCollection<SccRowViewModel>();
                 SetDES = new ObservableCollection<Vertex>();
                 _countOfSes = DsCount;
-
             }
         }
-
-
     }
 }

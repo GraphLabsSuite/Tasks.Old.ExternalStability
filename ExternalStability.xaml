@@ -98,11 +98,13 @@
                               Grid.RowSpan="3"
                               Grid.Column="0"
                               Width="3"
-                              MaxWidth="500"/>
+                              />
             <sdk:GridSplitter Grid.Row="0"
-                              Grid.Column="0"
+                              Grid.Column="1"
                               Width="3"
-                              MaxHeight="500"/>
+                              HorizontalAlignment="Stretch"
+                              VerticalAlignment="Center"
+                              />
             <!-- Матрица-->
             <controls1:Matrix Name="Matrix"
                               Grid.Column="1"

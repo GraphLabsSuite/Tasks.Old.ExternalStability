@@ -33,7 +33,7 @@ namespace GraphLabs.Tasks.ExternalStability
             var selectDESCommand = new ToolBarToggleCommand(
                 () =>
                 {
-                    if (_task == Task.t2)
+                    if (_task == Task.TaskSelectDomSets)
                     {
                         VertexClickCmd = new DelegateCommand(
                             o => SelectRMouseClick((IVertex) o),
@@ -74,15 +74,17 @@ namespace GraphLabs.Tasks.ExternalStability
                         +
                         "Для изменения матрицы необходимо изменить значение в ячейке и нажать \"Enter\"\n"
                         +
+                        "Либо дважды кликнуть мышью по ячейке матрицы\n"
+                        +
                         "\n"
                         +
                         "Задания:\n"
                         +
                         "1.1 Заполнить матрицу смежности\n"
                         +
-                        "1.2 Измените матрицу смежности под выполнение алгоритма Петрика\n"
+                        "1.2 Измените матрицу смежности под выполнение алгоритма красно-синих вершин\n"
                         +
-                        "2.Выделите несколько множеств внешней устойчивости с помощью графа\n (выделение множества доступно по кнопке <ES>\nзакрытие множества происходит по кнопке <{}>)\n"
+                        "2.Выделите несколько доминирующих множеств графа\n (выделение множества доступно по кнопке <ES>\nзакрытие множества происходит по кнопке <{}>)\n"
                         +
                         "3.Определить число внешней устойчивости (пометить соответствующее множество вершин)"
                     ),
@@ -99,20 +101,20 @@ namespace GraphLabs.Tasks.ExternalStability
                 {
                     switch (_task)
                     {
-                        case Task.t11:
+                        case Task.TaskAdjacencyMatrix:
                             CheckMatrix();
                             break;
-                        case Task.t12:
+                        case Task.TaskModifiedAdjMatrix:
                             CheckMatrixforAghorithm();
                             break;
-                        case Task.t2:
+                        case Task.TaskSelectDomSets:
                             MessageBox.Show(string.Format(
-                                "Необходимо найти еще {0} множеств(о)\n внешней устойчивости", _countOfSes));
+                                "Необходимо найти еще {0} множеств(о) внешней устойчивости", _countOfSes));
                             break;
-                        case Task.t3:
+                        case Task.TaskFindMinDomSets:
                             IsMinDS();
                             break;
-                        case Task.end:
+                        case Task.TaskEnd:
                             UserActionsManager.ReportThatTaskFinished();
                             TransferToNextTask();
                             break;
@@ -129,7 +131,7 @@ namespace GraphLabs.Tasks.ExternalStability
             var addSetofES = new ToolBarInstantCommand(
                 () =>
                 {
-                    if (_task == Task.t2)
+                    if (_task == Task.TaskSelectDomSets)
                     IsExternalStability();
                 },
                 () => _state == State.Nothing
