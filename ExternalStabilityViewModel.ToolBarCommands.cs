@@ -141,10 +141,28 @@ namespace GraphLabs.Tasks.ExternalStability
                 Description = "Добавить множество"
             };
 
+            // Проверка задания
+            var debugButton = new ToolBarInstantCommand(
+                () =>
+                {
+                    var counter = new MatrixErrorCounter();
+                    if (_task == Task.TaskAdjacencyMatrix)
+                        counter.FillInMatrix(Matrix, GivenGraph);
+                    if (_task == Task.TaskModifiedAdjMatrix)
+                        counter.ModifyMatrix(Matrix);
+                },
+                () => _state == State.Nothing
+                )
+            {
+                Image = new BitmapImage(GetImageUri("ok.png")),
+                Description = "Автозаполнение"
+            };
+
             ToolBarCommands.Add(checkButton);
             ToolBarCommands.Add(selectDESCommand);
             ToolBarCommands.Add(addSetofES);
             ToolBarCommands.Add(helpM);
+            ToolBarCommands.Add(debugButton);
 
             
         }

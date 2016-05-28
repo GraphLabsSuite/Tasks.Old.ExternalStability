@@ -111,7 +111,7 @@
                               Grid.Row="0"
                               BorderBrush="BlueViolet"
                               Margin="0,5,5,0"
-                              DataSource="{Binding Matrix}" Grid.ColumnSpan="2"
+                              DataSource="{Binding Matrix,  Mode=TwoWay}"
             />
 
             <!-- Панель инструментов -->

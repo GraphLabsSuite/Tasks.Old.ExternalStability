@@ -113,5 +113,43 @@ namespace GraphLabs.Tasks.ExternalStability
             return counter;
         }
 
+        /// <summary>
+        /// Автозаполнение матрицы
+        /// </summary>
+        /// <param name="matrix"></param>
+        /// <param name="givenGraph"></param>
+        public void FillInMatrix(ObservableCollection<MatrixRowViewModel<string>> matrix, UndirectedGraph givenGraph)
+        {
+            for (int i = 0; i < givenGraph.VerticesCount; i++)
+            {
+                for (int j = 0; j < givenGraph.VerticesCount; j++)
+                {
+                    var directEdge = givenGraph[givenGraph.Vertices[i], givenGraph.Vertices[j]];
+                    if (directEdge != null)
+                    {
+                        matrix[i][j + 1] = "1";
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Автомодификация матрицы
+        /// </summary>
+        /// <param name="matrix"></param>
+        public void ModifyMatrix(ObservableCollection<MatrixRowViewModel<string>> matrix)
+        {
+            for (int i = 0; i < matrix.Count; i++)
+            {
+                for (int j = 0; j < matrix.Count; j++)
+                {
+                    if (i == j)
+                    {
+                        matrix[i][j + 1] = "1";
+                    }
+                }
+            }
+        }
+
     }
 }
