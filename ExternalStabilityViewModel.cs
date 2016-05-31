@@ -48,9 +48,9 @@ namespace GraphLabs.Tasks.ExternalStability
         /// <summary>
         /// Требуемое число нахождения множеств внешней устойчивости
         /// </summary>
-        private short _countOfSes = DsCount;
+        private int _countOfSes;
 
-        private const short DsCount = 5;
+        private int _dsCount;
 
         /// <summary> Текущее состояние </summary>
         private State _state;
@@ -223,6 +223,11 @@ namespace GraphLabs.Tasks.ExternalStability
             get { return (IList<SccRowViewModel>)GetValue(SccRowsProperty); }
             set { SetValue(SccRowsProperty, value); }
         }
+
+        /// <summary>
+        /// Реальное совокупность наименьших доминирующих множеств
+        /// </summary>
+        public IList<SccRowViewModel> RealSccRows;
         #endregion
 
 
@@ -301,8 +306,18 @@ namespace GraphLabs.Tasks.ExternalStability
                     SccRows = new ObservableCollection<SccRowViewModel>();
                     SetDES = new ObservableCollection<Vertex>();
                     IsMouseVerticesMovingEnabled = true;
+                    var minDsCount = new MinDSEvaluator(GivenGraph);
+                    minDsCount.Evaluate(GivenGraph);
+                    RealSccRows = new List<SccRowViewModel>();
+                    foreach (var minDs in minDsCount.MinDs)
+                    {
+                        var tempScc = new SccRowViewModel(minDs);
+                        RealSccRows.Add(tempScc);
+                    }
 
                     _task = Task.TaskAdjacencyMatrix;
+                    _dsCount = RealSccRows.Count + 2;
+                    _countOfSes = _dsCount;
 
                     var matrix = new ObservableCollection<MatrixRowViewModel<string>>();
                     for (var i = 0; i < GivenGraph.VerticesCount; ++i)
@@ -458,14 +473,8 @@ namespace GraphLabs.Tasks.ExternalStability
             UserActionsManager.RegisterInfo(string.Format("Выбрана вершина: {0}", clickedVertex.Name));
         }
 
-        /// <summary>
-        /// Проверка выбранного множества вершин на соответствие множеству внешней устойчивости
-        /// </summary>
-        /// <returns></returns>
         private bool IsExternalStability()
         {
-            var isExternal = true;
-            var isAdded = false;
             var extendedSetofVertex = new Collection<Vertex>();
 
             foreach (var vertex in SetDES)
@@ -496,77 +505,151 @@ namespace GraphLabs.Tasks.ExternalStability
             {
                 if (!extendedSetofVertex.Contains(vertex))
                 {
-                    isExternal = false;
+                    return false;
                 }
             }
 
-            if (isExternal)
+            return true;
+        }
+
+        private bool IsExternalStability(IList<Vertex> vSet)
+        {
+            var extendedSetofVertex = new Collection<Vertex>();
+
+            foreach (var vertex in vSet)
             {
-                --_countOfSes;
+                extendedSetofVertex.Add(vertex);
+            }
 
-                //Выбрано достаточное количество множеств внешней устойчивости
-                if (_countOfSes == 0)
+            //Добавляем вершины, соседние с выбранными в расширенный набор вершин
+            foreach (var vertex in vSet)
+            {
+                foreach (var edge in GivenGraph.Edges)
                 {
-                    MessageBox.Show("Задание 2 пройдено.\n Вы перешли к заданию 3.\n Ознакомьтесь со справкой.<?>");
-                    _task = Task.TaskFindMinDomSets;
-                }
-                if (UserActionsManager.Score > _countOfSes)
-                    UserActionsManager.RegisterInfo(string.Format(@"Множество добавлено. Осталось {0} множеств(о).",
-                        _countOfSes));
-                else if (UserActionsManager.Score > 0)
-                {
-                    UserActionsManager.RegisterInfo(string.Format(@"Множество добавлено. Осталось {0} множеств(о).",
-                        UserActionsManager.Score));
-                }
-
-
-
-                var sccStr = new SccRowViewModel(SetDES);
-
-                //Поиск выбранного множества в списке всех множеств ???
-                foreach (var sccRow in SccRows)
-                {
-                    if (sccRow.VerticesView == sccStr.VerticesView)
+                    if ((edge.Vertex1 == vertex) && !extendedSetofVertex.Contains(edge.Vertex2))
                     {
-                        isAdded = true;
-                        break;
+                        extendedSetofVertex.Add(edge.Vertex2);
+                    }
+                    if ((edge.Vertex2 == vertex) && !extendedSetofVertex.Contains(edge.Vertex1))
+                    {
+                        extendedSetofVertex.Add(edge.Vertex1);
                     }
 
                 }
+                // GivenGraph.Vertices.Where(e => externalMultiplicity.Contains(e.Vertex1));
+            }
 
-                //Проверка на уже добавленность выбранного множества
-                if (isAdded)
+            //Проверяем, есть ли вершины в графе, не являющиеся соседними с выбранным множеством
+            foreach (var vertex in GivenGraph.Vertices)
+            {
+                if (!extendedSetofVertex.Contains(vertex))
                 {
-                    MessageBox.Show("Множество "+sccStr.VerticesView +" уже добавлено.");
-                    if (UserActionsManager.Score > 2)
-                        UserActionsManager.RegisterMistake("Множество " + sccStr.VerticesView + " уже добавлено.", 2);
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        private bool IsMinimal()
+        {
+            var flag = true;
+            for (var i = 0; i < SetDES.Count; i++)
+            {
+                var newSet = new SccRowViewModel(SetDES, false);
+                newSet.VerticesSet.RemoveAt(i);
+                flag = IsExternalStability(newSet.VerticesSet);
+            }
+            if (!flag) return true;
+            return false;
+        }
+
+        /// <summary>
+        /// Проверка выбранного множества вершин на соответствие множеству внешней устойчивости
+        /// </summary>
+        /// <returns></returns>
+        private bool ValudateSet()
+        {
+            var isAdded = false;
+            bool isExternal = IsExternalStability();
+            var sccStr = new SccRowViewModel(SetDES);
+            var isMinimal = IsMinimal();
+            if (isExternal)
+            {
+                if (isMinimal)
+                {
+                    --_countOfSes;
+
+                    //Выбрано достаточное количество множеств внешней устойчивости
+                    if (_countOfSes == 0)
+                    {
+                        MessageBox.Show("Задание 2 пройдено.\n Вы перешли к заданию 3.\n Ознакомьтесь со справкой.<?>");
+                        _task = Task.TaskFindMinDomSets;
+                    }
+                    if (UserActionsManager.Score > _countOfSes)
+                        UserActionsManager.RegisterInfo(string.Format(@"Множество добавлено. Осталось {0} множеств(о).",
+                            _countOfSes));
                     else if (UserActionsManager.Score > 0)
                     {
-                        UserActionsManager.RegisterMistake("Множество " + sccStr.VerticesView + " уже добавлено.", (short) UserActionsManager.Score);
+                        UserActionsManager.RegisterInfo(string.Format(@"Множество добавлено. Осталось {0} множеств(о).",
+                            UserActionsManager.Score));
+                    }
+                    //Поиск выбранного множества в списке всех множеств ???
+                    foreach (var sccRow in SccRows)
+                    {
+                        if (sccRow.VerticesView == sccStr.VerticesView)
+                        {
+                            isAdded = true;
+                            break;
+                        }
+
+                    }
+                    //Проверка на уже добавленность выбранного множества
+                    if (isAdded)
+                    {
+                        _countOfSes++;
+                        MessageBox.Show("Множество " + sccStr.VerticesView + " уже добавлено.");
+                        if (UserActionsManager.Score > 2)
+                            UserActionsManager.RegisterMistake("Множество " + sccStr.VerticesView + " уже добавлено.", 2);
+                        else if (UserActionsManager.Score > 0)
+                        {
+                            UserActionsManager.RegisterMistake("Множество " + sccStr.VerticesView + " уже добавлено.",
+                                (short) UserActionsManager.Score);
+                        }
+                    }
+                    else
+                    {
+                        SccRows.Add(sccStr);
+                    }
+
+                    //Очищаем текущее множество выбранных вершин
+                    SetDES.Clear();
+
+                    //Визуальное изменение выбранных элементов
+                    foreach (var vertex in VertVisCol)
+                    {
+                        vertex.BorderBrush = new SolidColorBrush(_defaultBorderColor);
+                        vertex.Background = new SolidColorBrush(_defaultBackgroundColor);
+                        Matrix[Convert.ToInt32(vertex.Name)].Background =
+                            new SolidColorBrush(Color.FromArgb(250, 239, 240, 250));
+                    }
+
+
+                    foreach (var edge in EdgeVisCol)
+                    {
+                        edge.Stroke = new SolidColorBrush(_defaultBorderColor);
                     }
                 }
                 else
                 {
-                    SccRows.Add(sccStr);
+                    if (UserActionsManager.Score > 10)
+                        UserActionsManager.RegisterMistake("Это множество вершин не является минимальным.", 10);
+                    else if (UserActionsManager.Score > 0)
+                    {
+                        UserActionsManager.RegisterMistake("Это множество вершин не является минимальным.",
+                            (short)UserActionsManager.Score);
+                    }
                 }
-
-                //Очищаем текущее множество выбранных вершин
-                SetDES.Clear();
-
-                //Визуальное изменение выбранных элементов
-                foreach (var vertex in VertVisCol)
-                {
-                    vertex.BorderBrush = new SolidColorBrush(_defaultBorderColor);
-                    vertex.Background = new SolidColorBrush(_defaultBackgroundColor);
-                    Matrix[Convert.ToInt32(vertex.Name)].Background = new SolidColorBrush(Color.FromArgb(250, 239, 240, 250));
-                }
-
-
-                foreach (var edge in EdgeVisCol)
-                {
-                    edge.Stroke = new SolidColorBrush(_defaultBorderColor);
-                }
-
             }
             else
             {
@@ -586,14 +669,6 @@ namespace GraphLabs.Tasks.ExternalStability
         /// </summary>
         private void IsMinDS()
         {
-            var minDsCount = new MinDSEvaluator(GivenGraph);
-            minDsCount.Evaluate(GivenGraph);
-            var realSccRows = new List<SccRowViewModel>();
-            foreach (var minDs in minDsCount.MinDs)
-            {
-                var tempScc = new SccRowViewModel(minDs);
-                realSccRows.Add(tempScc);
-            }
  
             var numofChosen = 0;
             foreach (var sccRow in SccRows)
@@ -603,7 +678,7 @@ namespace GraphLabs.Tasks.ExternalStability
                     numofChosen++;
                 }
             }
-            foreach (var realSccRow in realSccRows)
+            foreach (var realSccRow in RealSccRows)
             {   
                 foreach (var sccRow in SccRows)
                 {
@@ -629,7 +704,7 @@ namespace GraphLabs.Tasks.ExternalStability
             var k = "";
             var numOfBuilt = 0;
             var m = 0;
-            foreach (var realSccRow in realSccRows)
+            foreach (var realSccRow in RealSccRows)
             {
                 if (realSccRow.IsBuilt)
                 {
@@ -664,7 +739,7 @@ namespace GraphLabs.Tasks.ExternalStability
                 _task = Task.TaskSelectDomSets;
                 SccRows = new ObservableCollection<SccRowViewModel>();
                 SetDES = new ObservableCollection<Vertex>();
-                _countOfSes = DsCount;
+                _countOfSes = _dsCount;
             }
             else
             {
@@ -678,7 +753,7 @@ namespace GraphLabs.Tasks.ExternalStability
                 _task = Task.TaskSelectDomSets;
                 SccRows = new ObservableCollection<SccRowViewModel>();
                 SetDES = new ObservableCollection<Vertex>();
-                _countOfSes = DsCount;
+                _countOfSes = _dsCount;
             }
         }
     }

@@ -132,7 +132,7 @@ namespace GraphLabs.Tasks.ExternalStability
                 () =>
                 {
                     if (_task == Task.TaskSelectDomSets)
-                    IsExternalStability();
+                    ValudateSet();
                 },
                 () => _state == State.Nothing
                 )
@@ -162,9 +162,9 @@ namespace GraphLabs.Tasks.ExternalStability
             ToolBarCommands.Add(selectDESCommand);
             ToolBarCommands.Add(addSetofES);
             ToolBarCommands.Add(helpM);
-            ToolBarCommands.Add(debugButton);
 
-            
+
+
         }
     }
 }

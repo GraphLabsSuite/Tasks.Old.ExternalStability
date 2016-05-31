@@ -33,7 +33,7 @@ namespace GraphLabs.Tasks.ExternalStability
         /// <summary>
         /// Множество вершин
         /// </summary>
-        public readonly IList<Vertex> VerticesSet;  
+        public IList<Vertex> VerticesSet;  
 
         /// <summary> Множество вершин для вывода </summary>
         public static readonly DependencyProperty VerticesViewProperty = DependencyProperty.Register(
@@ -70,6 +70,18 @@ namespace GraphLabs.Tasks.ExternalStability
             _count = 0;
         }
 
+        /// <summary>
+        /// Конструктор-клонизатор
+        /// </summary>
+        /// <param name="prototype"></param>
+        public SccRowViewModel (SccRowViewModel prototype)
+        {
+            this.VerticesSet = prototype.VerticesSet;
+            this.IsBuilt = prototype.IsBuilt;
+            this.Number = prototype.Number;
+            this.VerticesView = prototype.VerticesView;
+        }
+
         private const string SccNameDelimiter = ", ";     
         private static string BuildSccName(IEnumerable<Vertex> vertices)
         {
@@ -85,5 +97,16 @@ namespace GraphLabs.Tasks.ExternalStability
             VerticesView = BuildSccName(vertices);
             IsBuilt = false;
         }
+
+        /// <summary> Ctor. </summary>
+    public SccRowViewModel(IList<Vertex> vertices, bool flag)
+        {
+            if (flag) Number = ++_count;
+            VerticesSet = new List<Vertex>(vertices);
+            VerticesView = BuildSccName(vertices);
+            IsBuilt = false;
+        }
+
+
     }
 }
