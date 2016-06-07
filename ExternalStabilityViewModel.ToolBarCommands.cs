@@ -162,6 +162,7 @@ namespace GraphLabs.Tasks.ExternalStability
             ToolBarCommands.Add(selectDESCommand);
             ToolBarCommands.Add(addSetofES);
             ToolBarCommands.Add(helpM);
+            ToolBarCommands.Add(debugButton);
 
 
 

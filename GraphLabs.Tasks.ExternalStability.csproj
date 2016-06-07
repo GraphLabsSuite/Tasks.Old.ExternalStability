@@ -198,6 +198,7 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="CheckSet.cs" />
     <Compile Include="Configuration\MockedWcfServicesConfigurator.cs" />
     <Compile Include="MatrixErrorCounter.cs" />
     <Compile Include="MinDSEvaluator.cs" />

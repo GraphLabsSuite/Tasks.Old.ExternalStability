@@ -307,16 +307,22 @@ namespace GraphLabs.Tasks.ExternalStability
                     SetDES = new ObservableCollection<Vertex>();
                     IsMouseVerticesMovingEnabled = true;
                     var minDsCount = new MinDSEvaluator(GivenGraph);
-                    minDsCount.Evaluate(GivenGraph);
+                    minDsCount.Evaluate(GivenGraph, true);
                     RealSccRows = new List<SccRowViewModel>();
                     foreach (var minDs in minDsCount.MinDs)
                     {
                         var tempScc = new SccRowViewModel(minDs);
                         RealSccRows.Add(tempScc);
                     }
-
+                    var minimalDsCount = new MinDSEvaluator(GivenGraph);
+                    minimalDsCount.Evaluate(GivenGraph, false);
+                    var tempCount = 0;
+                    foreach (var minDs in minimalDsCount.MinDs)
+                    {
+                        tempCount++;
+                    }
                     _task = Task.TaskAdjacencyMatrix;
-                    _dsCount = RealSccRows.Count + 2;
+                    _dsCount = tempCount - 1;
                     _countOfSes = _dsCount;
 
                     var matrix = new ObservableCollection<MatrixRowViewModel<string>>();
@@ -473,96 +479,6 @@ namespace GraphLabs.Tasks.ExternalStability
             UserActionsManager.RegisterInfo(string.Format("Выбрана вершина: {0}", clickedVertex.Name));
         }
 
-        private bool IsExternalStability()
-        {
-            var extendedSetofVertex = new Collection<Vertex>();
-
-            foreach (var vertex in SetDES)
-            {
-                extendedSetofVertex.Add(vertex);
-            }
-
-            //Добавляем вершины, соседние с выбранными в расширенный набор вершин
-            foreach (var vertex in SetDES)
-            {
-                foreach (var edge in GivenGraph.Edges)
-                {
-                    if ((edge.Vertex1 == vertex) && !extendedSetofVertex.Contains(edge.Vertex2))
-                    {
-                        extendedSetofVertex.Add(edge.Vertex2);
-                    }
-                    if ((edge.Vertex2 == vertex) && !extendedSetofVertex.Contains(edge.Vertex1))
-                    {
-                        extendedSetofVertex.Add(edge.Vertex1);
-                    }
-
-                }
-                // GivenGraph.Vertices.Where(e => externalMultiplicity.Contains(e.Vertex1));
-            }
-
-            //Проверяем, есть ли вершины в графе, не являющиеся соседними с выбранным множеством
-            foreach (var vertex in GivenGraph.Vertices)
-            {
-                if (!extendedSetofVertex.Contains(vertex))
-                {
-                    return false;
-                }
-            }
-
-            return true;
-        }
-
-        private bool IsExternalStability(IList<Vertex> vSet)
-        {
-            var extendedSetofVertex = new Collection<Vertex>();
-
-            foreach (var vertex in vSet)
-            {
-                extendedSetofVertex.Add(vertex);
-            }
-
-            //Добавляем вершины, соседние с выбранными в расширенный набор вершин
-            foreach (var vertex in vSet)
-            {
-                foreach (var edge in GivenGraph.Edges)
-                {
-                    if ((edge.Vertex1 == vertex) && !extendedSetofVertex.Contains(edge.Vertex2))
-                    {
-                        extendedSetofVertex.Add(edge.Vertex2);
-                    }
-                    if ((edge.Vertex2 == vertex) && !extendedSetofVertex.Contains(edge.Vertex1))
-                    {
-                        extendedSetofVertex.Add(edge.Vertex1);
-                    }
-
-                }
-                // GivenGraph.Vertices.Where(e => externalMultiplicity.Contains(e.Vertex1));
-            }
-
-            //Проверяем, есть ли вершины в графе, не являющиеся соседними с выбранным множеством
-            foreach (var vertex in GivenGraph.Vertices)
-            {
-                if (!extendedSetofVertex.Contains(vertex))
-                {
-                    return false;
-                }
-            }
-
-            return true;
-        }
-
-        private bool IsMinimal()
-        {
-            var flag = true;
-            for (var i = 0; i < SetDES.Count; i++)
-            {
-                var newSet = new SccRowViewModel(SetDES, false);
-                newSet.VerticesSet.RemoveAt(i);
-                flag = IsExternalStability(newSet.VerticesSet);
-            }
-            if (!flag) return true;
-            return false;
-        }
 
         /// <summary>
         /// Проверка выбранного множества вершин на соответствие множеству внешней устойчивости
@@ -571,15 +487,15 @@ namespace GraphLabs.Tasks.ExternalStability
         private bool ValudateSet()
         {
             var isAdded = false;
-            bool isExternal = IsExternalStability();
+            var setChecker = new CheckSet();
+            bool isExternal = setChecker.IsExternalStability(SetDES, GivenGraph);
             var sccStr = new SccRowViewModel(SetDES);
-            var isMinimal = IsMinimal();
+            var isMinimal = setChecker.IsMinimal(SetDES, GivenGraph);
             if (isExternal)
             {
                 if (isMinimal)
                 {
                     --_countOfSes;
-
                     //Выбрано достаточное количество множеств внешней устойчивости
                     if (_countOfSes == 0)
                     {
@@ -665,7 +581,7 @@ namespace GraphLabs.Tasks.ExternalStability
         }
 
         /// <summary>
-        /// Проверка выбранного множества на соответствие минимальному множеству внешней устойчивости
+        /// Проверка выбранного множества на соответствие наименьшему множеству внешней устойчивости
         /// </summary>
         private void IsMinDS()
         {
@@ -743,7 +659,7 @@ namespace GraphLabs.Tasks.ExternalStability
             }
             else
             {
-                k = "Выбранные множества не являются минимальными. Выбраны не все множества" + k + "";
+                k = "Выбранные множества не являются минимальными. Выбраны не все множества";
                 if (UserActionsManager.Score > m) UserActionsManager.RegisterMistake(k, (short) m);
                 else if (UserActionsManager.Score > 0)
                 {

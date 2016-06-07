@@ -12,7 +12,7 @@ namespace GraphLabs.Tasks.ExternalStability
         /// <summary>
         /// Минимальные доминирующие множества
         /// </summary>
-        public List<List<Vertex>> MinDs;
+        public readonly List<List<Vertex>> MinDs;
 
         /// <summary>
         /// Максимальное число связей на вершину в графе
@@ -51,11 +51,12 @@ namespace GraphLabs.Tasks.ExternalStability
         /// Публичный метод вычисления минимального доминирующего множества
         /// </summary>
         /// <param name="graph"></param>
+        /// <param name="flag"></param>
         /// <returns></returns>
-        public List<List<Vertex>> Evaluate(UndirectedGraph graph)
+        public List<List<Vertex>> Evaluate(UndirectedGraph graph, bool flag)
         {
             var firstStep = new State(graph);
-            Process(firstStep, graph);
+            Process(firstStep, graph, flag);
             return MinDs;
         }
 
@@ -170,23 +171,34 @@ namespace GraphLabs.Tasks.ExternalStability
 
 
 
-        private void Process(State givenState, UndirectedGraph graph)
+        private void Process(State givenState, UndirectedGraph graph, bool flag)
         {
             if (givenState.Level == _n)
             {
                 var isAllVerticesCovered = CanVerticesBeCovered(givenState);
                 if (isAllVerticesCovered)
                 {
-                    if (MinDs.First().Count > givenState.TempDs.Count)
+                    if (flag)
                     {
-                        MinDs.Clear();
-                        MinDs.Add(givenState.TempDs);
-                        return;
+                        if (MinDs.First().Count > givenState.TempDs.Count)
+                        {
+                            MinDs.Clear();
+                            MinDs.Add(givenState.TempDs);
+                            return;
+                        }
+                        if (MinDs.First().Count == givenState.TempDs.Count)
+                        {
+                            MinDs.Add(givenState.TempDs);
+                            return;
+                        }
                     }
-                    if (MinDs.First().Count == givenState.TempDs.Count)
+                    else
                     {
-                        MinDs.Add(givenState.TempDs);
-                        return;
+                        var checker = new CheckSet();
+                        if (checker.IsMinimal(givenState.TempDs, graph))
+                        {
+                            MinDs.Add(givenState.TempDs);
+                        }
                     }
                 }
             }
@@ -200,37 +212,58 @@ namespace GraphLabs.Tasks.ExternalStability
                 {
                     var newState = givenState.Clone();
                     newState.Level++;
-                    Process(newState, graph);
+                    Process(newState, graph, flag);
                 }
                 givenState.VertexColor[givenVertex] = StateColor.RED;
                 givenState.TempDs.Add(givenVertex);
                 RedVertexRecount(givenState, givenVertex);
                 if (givenState.NDominated == _n)
                 {
-                    if (MinDs.First().Count > givenState.TempDs.Count)
+                    if (flag)
                     {
-                        MinDs.Clear();
-                        MinDs.Add(givenState.TempDs);
-                        return;
+                        if (MinDs.First().Count > givenState.TempDs.Count)
+                        {
+                            MinDs.Clear();
+                            MinDs.Add(givenState.TempDs);
+                            return;
+                        }
+                        if (MinDs.First().Count == givenState.TempDs.Count)
+                        {
+                            MinDs.Add(givenState.TempDs);
+                            return;
+                        }
                     }
-                    if (MinDs.First().Count == givenState.TempDs.Count)
+                    else
                     {
-                        MinDs.Add(givenState.TempDs);
-                        return;
+                        var checker = new CheckSet();
+                        if (checker.IsMinimal(givenState.TempDs, graph))
+                        {
+                            MinDs.Add(givenState.TempDs);
+                        }
                     }
                 }
                 else
                 {
-                    var nExtra = (double)(_n - givenState.NDominated) / (_delta + 1);
-                    if ((nExtra + givenState.TempDs.Count) > MinDs.First().Count)
+                    if (flag)
                     {
-                        return;
+                        var nExtra = (double) (_n - givenState.NDominated)/(_delta + 1);
+                        if ((nExtra + givenState.TempDs.Count) > MinDs.First().Count)
+                        {
+                            return;
+                        }
+                        else
+                        {
+                            var newState = givenState.Clone();
+                            newState.Level++;
+                            Process(newState, graph, flag);
+                            return;
+                        }
                     }
                     else
                     {
                         var newState = givenState.Clone();
                         newState.Level++;
-                        Process(newState, graph);
+                        Process(newState, graph, flag);
                         return;
                     }
                 }
