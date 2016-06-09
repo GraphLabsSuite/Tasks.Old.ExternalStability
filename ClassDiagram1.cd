@@ -1,0 +1,89 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1" GroupingSetting="Access">
+  <Class Name="GraphLabs.Tasks.ExternalStability.App">
+    <Position X="14" Y="1.75" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAQAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>App.xaml.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GraphLabs.Tasks.ExternalStability.CheckSet">
+    <Position X="16.5" Y="4.75" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAACAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>CheckSet.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GraphLabs.Tasks.ExternalStability.ExternalStability">
+    <Position X="5.75" Y="4.25" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AIAAAEAAAAAhIAhAQACAAABARCAAQAAAAAkAAAAAgAA=</HashCode>
+      <FileName>ExternalStability.xaml.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GraphLabs.Tasks.ExternalStability.ExternalStabilityViewModel">
+    <Position X="1" Y="0.5" Width="3" />
+    <Compartments>
+      <Compartment Name="Nested Types" Collapsed="false" />
+    </Compartments>
+    <NestedTypes>
+      <Enum Name="GraphLabs.Tasks.ExternalStability.ExternalStabilityViewModel.State">
+        <TypeIdentifier>
+          <NewMemberFileName>ExternalStabilityViewModel.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+      <Enum Name="GraphLabs.Tasks.ExternalStability.ExternalStabilityViewModel.Task">
+        <TypeIdentifier>
+          <NewMemberFileName>ExternalStabilityViewModel.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>qgxw4IogVACAA0SAAipCCCAAQBCgAAAACBiAAAMEECA=</HashCode>
+      <FileName>ExternalStabilityViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GraphLabs.Tasks.ExternalStability.MatrixErrorCounter">
+    <Position X="6" Y="1" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AEAABAAAAAgQAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAA=</HashCode>
+      <FileName>MatrixErrorCounter.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GraphLabs.Tasks.ExternalStability.MinDSEvaluator">
+    <Position X="8.25" Y="10.25" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAggAAAAAAAAAAAAgAAAgAAAAAAEAAAgAACAACQAAA=</HashCode>
+      <FileName>MinDSEvaluator.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GraphLabs.Tasks.ExternalStability.MdsRowViewModel">
+    <Position X="15.75" Y="7" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAABAAAUAAEMAIAAAAAAAAACCAAAABAAA=</HashCode>
+      <FileName>MdsRowViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GraphLabs.Tasks.ExternalStability.State">
+    <Position X="11.25" Y="10" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAgAAACAAAAAAAAhIAAAAAAAAAABAAAAAAAAAhA=</HashCode>
+      <FileName>State.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GraphLabs.Tasks.ExternalStability.Configuration.MockedWcfServicesConfigurator">
+    <Position X="9.75" Y="2.25" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAA=</HashCode>
+      <FileName>Configuration\MockedWcfServicesConfigurator.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Enum Name="GraphLabs.Tasks.ExternalStability.StateColor">
+    <Position X="6" Y="10.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAQIAAAAAAAAAAAgAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>State.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

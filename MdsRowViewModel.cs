@@ -9,13 +9,13 @@ using System.Linq;
 namespace GraphLabs.Tasks.ExternalStability
 {
     /// <summary> ViewModel КСС для отображения на панели при построении конденсата </summary>
-    public class SccRowViewModel : DependencyObject
+    public class MdsRowViewModel : DependencyObject
     {
         /// <summary> № </summary>
         public static readonly DependencyProperty NumberProperty = DependencyProperty.Register(
             nameof(Number),
             typeof(int),
-            typeof(SccRowViewModel),
+            typeof(MdsRowViewModel),
             new PropertyMetadata(default(int)));
         
         /// <summary> № </summary>
@@ -39,7 +39,7 @@ namespace GraphLabs.Tasks.ExternalStability
         public static readonly DependencyProperty VerticesViewProperty = DependencyProperty.Register(
             nameof(VerticesView),
             typeof(string),
-            typeof(SccRowViewModel),
+            typeof(MdsRowViewModel),
             new PropertyMetadata(default(string)));
         
         /// <summary> Множество вершин </summary>
@@ -54,7 +54,7 @@ namespace GraphLabs.Tasks.ExternalStability
         public static DependencyProperty IsBuiltProperty = DependencyProperty.Register(
             nameof(IsBuilt),
             typeof(bool),
-            typeof(SccRowViewModel),
+            typeof(MdsRowViewModel),
             new PropertyMetadata(default(bool)));
 
         /// <summary> Уже построена? </summary>
@@ -65,7 +65,7 @@ namespace GraphLabs.Tasks.ExternalStability
         }
 
         /// <summary> Обнуляем счётчик количества </summary>
-        static SccRowViewModel()
+        static MdsRowViewModel()
         {
             _count = 0;
         }
@@ -74,7 +74,7 @@ namespace GraphLabs.Tasks.ExternalStability
         /// Конструктор-клонизатор
         /// </summary>
         /// <param name="prototype"></param>
-        public SccRowViewModel (SccRowViewModel prototype)
+        public MdsRowViewModel (MdsRowViewModel prototype)
         {
             this.VerticesSet = prototype.VerticesSet;
             this.IsBuilt = prototype.IsBuilt;
@@ -90,7 +90,7 @@ namespace GraphLabs.Tasks.ExternalStability
          }
 
     /// <summary> Ctor. </summary>
-    public SccRowViewModel(IList<Vertex> vertices)
+    public MdsRowViewModel(IList<Vertex> vertices)
         {
             Number = ++_count;
             VerticesSet = new List<Vertex>(vertices);
@@ -99,7 +99,7 @@ namespace GraphLabs.Tasks.ExternalStability
         }
 
         /// <summary> Ctor. </summary>
-    public SccRowViewModel(IList<Vertex> vertices, bool flag)
+    public MdsRowViewModel(IList<Vertex> vertices, bool flag)
         {
             if (flag) Number = ++_count;
             VerticesSet = new List<Vertex>(vertices);

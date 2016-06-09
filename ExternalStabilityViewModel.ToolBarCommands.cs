@@ -30,7 +30,7 @@ namespace GraphLabs.Tasks.ExternalStability
             ToolBarCommands = new ObservableCollection<ToolBarCommandBase>();
 
             // Выбор множества External stability
-            var selectDESCommand = new ToolBarToggleCommand(
+            var selectDsCommand = new ToolBarToggleCommand(
                 () =>
                 {
                     if (_task == Task.TaskSelectDomSets)
@@ -38,7 +38,7 @@ namespace GraphLabs.Tasks.ExternalStability
                         VertexClickCmd = new DelegateCommand(
                             o => SelectRMouseClick((IVertex) o),
                             o => true);
-                        _state = State.SetDes;
+                        _state = State.SetEs;
                         IsMouseVerticesMovingEnabled = false;
                     }
                     
@@ -159,7 +159,7 @@ namespace GraphLabs.Tasks.ExternalStability
             };
 
             ToolBarCommands.Add(checkButton);
-            ToolBarCommands.Add(selectDESCommand);
+            ToolBarCommands.Add(selectDsCommand);
             ToolBarCommands.Add(addSetofES);
             ToolBarCommands.Add(helpM);
             ToolBarCommands.Add(debugButton);

@@ -87,19 +87,19 @@ namespace GraphLabs.Tasks.ExternalStability
         /// <summary>
         /// Список множеств внешней устойчивости из визуализатора
         /// </summary>
-        public static DependencyProperty SccRowsVisProperty = DependencyProperty.Register(
-            nameof(SccRowsVis),
-            typeof(ReadOnlyCollection<SccRowViewModel>),
+        public static DependencyProperty MdsRowsVisProperty = DependencyProperty.Register(
+            nameof(MdsRowsVis),
+            typeof(ReadOnlyCollection<MdsRowViewModel>),
             typeof(ExternalStability),
-            new PropertyMetadata(default(ReadOnlyCollection<SccRowViewModel>)));
+            new PropertyMetadata(default(ReadOnlyCollection<MdsRowViewModel>)));
 
         /// <summary>
         /// Список множеств внешней устойчивости из визуализатора
         /// </summary>
-        public ReadOnlyCollection<SccRowViewModel> SccRowsVis
+        public ReadOnlyCollection<MdsRowViewModel> MdsRowsVis
         {
-            get { return (ReadOnlyCollection<SccRowViewModel>)GetValue(SccRowsVisProperty); }
-            set { SetValue(SccRowsVisProperty, value); }
+            get { return (ReadOnlyCollection<MdsRowViewModel>)GetValue(MdsRowsVisProperty); }
+            set { SetValue(MdsRowsVisProperty, value); }
         }
 
         /// <summary> Ctor. </summary>

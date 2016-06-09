@@ -67,16 +67,16 @@ namespace GraphLabs.Tasks.ExternalStability
         /// <summary>
         ///  Является ли множество минимальным доминирующим
         /// </summary>
-        /// <param name="setDES"></param>
+        /// <param name="setEs"></param>
         /// <param name="givenGraph"></param>
         /// <returns></returns>
-        public bool IsMinimal(IList<Vertex> setDES, UndirectedGraph givenGraph)
+        public bool IsMinimal(IList<Vertex> setEs, UndirectedGraph givenGraph)
         {
             var leadFlag = true;
             var flag = true;
-            for (var i = 0; i < setDES.Count; i++)
+            for (var i = 0; i < setEs.Count; i++)
             {
-                var newSet = new SccRowViewModel(setDES, false);
+                var newSet = new MdsRowViewModel(setEs, false);
                 newSet.VerticesSet.RemoveAt(i);
                 flag = IsExternalStability(newSet.VerticesSet, givenGraph);
                 if (flag) leadFlag = false;

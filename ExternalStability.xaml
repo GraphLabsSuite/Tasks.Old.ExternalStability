@@ -129,7 +129,7 @@
                               Grid.Column="1"
                               Name ="SccList"
                               Margin="5,0,5,0"
-                              ItemsSource="{Binding SccRows}" 
+                              ItemsSource="{Binding MdsRows}" 
                               AutoGenerateColumns="False" 
                               AlternatingRowBackground="#FFE8E8E8" Grid.ColumnSpan="2">
                 <sdk:DataGrid.Columns>

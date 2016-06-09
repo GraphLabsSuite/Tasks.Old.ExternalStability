@@ -25,10 +25,10 @@ namespace GraphLabs.Tasks.ExternalStability
             /// <summary> Пусто </summary>
             Nothing,
             /// <summary> Добавление вершин в множество ES </summary>
-            SetDes,
+            SetEs,
         }
         /// <summary> Текущее подзадание </summary>
-        public enum Task
+    private enum Task
         {
             /// <summary>Заполнение матрицы </summary>
             TaskAdjacencyMatrix,
@@ -43,7 +43,7 @@ namespace GraphLabs.Tasks.ExternalStability
         }
 
         /// <summary> Текущее задание </summary>
-        public Task _task;
+        private Task _task;
 
         /// <summary>
         /// Требуемое число нахождения множеств внешней устойчивости
@@ -153,8 +153,8 @@ namespace GraphLabs.Tasks.ExternalStability
         /// <summary>
         /// Множество внешней устойчивости, выбираемое студентом
         /// </summary>
-        public static readonly DependencyProperty SetDESProperty = DependencyProperty.Register(
-            nameof(SetDES),
+        public static readonly DependencyProperty DomSetProperty = DependencyProperty.Register(
+            nameof(DomSet),
             typeof(ObservableCollection<Vertex>),
             typeof(ExternalStabilityViewModel),
             new PropertyMetadata(default(ObservableCollection<Vertex>)));
@@ -162,10 +162,10 @@ namespace GraphLabs.Tasks.ExternalStability
         /// <summary>
         /// Множесто внешней устойчивости, выбираемое студентом
         /// </summary>
-        public ObservableCollection<Vertex> SetDES
+        public ObservableCollection<Vertex> DomSet
         {
-            get { return (ObservableCollection<Vertex>)GetValue(SetDESProperty); }
-            set { SetValue(SetDESProperty, value); }
+            get { return (ObservableCollection<Vertex>)GetValue(DomSetProperty); }
+            set { SetValue(DomSetProperty, value); }
         }
 
         /// <summary> Заполняемая студентом матрица </summary>
@@ -211,23 +211,23 @@ namespace GraphLabs.Tasks.ExternalStability
         }
 
         /// <summary> Строки КСС для боковой панели в режиме "Конденсат" </summary>
-        public static readonly DependencyProperty SccRowsProperty = DependencyProperty.Register(
-            nameof(SccRows), 
-            typeof(IList<SccRowViewModel>),
+        public static readonly DependencyProperty MdsRowsProperty = DependencyProperty.Register(
+            nameof(MdsRows), 
+            typeof(IList<MdsRowViewModel>),
             typeof(ExternalStabilityViewModel),
-            new PropertyMetadata(default(SccRowViewModel)));
+            new PropertyMetadata(default(MdsRowViewModel)));
 
         /// <summary> Строки КСС для боковой панели в режиме "Конденсат" </summary>
-        public IList<SccRowViewModel> SccRows
+        public IList<MdsRowViewModel> MdsRows
         {
-            get { return (IList<SccRowViewModel>)GetValue(SccRowsProperty); }
-            set { SetValue(SccRowsProperty, value); }
+            get { return (IList<MdsRowViewModel>)GetValue(MdsRowsProperty); }
+            set { SetValue(MdsRowsProperty, value); }
         }
 
         /// <summary>
         /// Реальное совокупность наименьших доминирующих множеств
         /// </summary>
-        public IList<SccRowViewModel> RealSccRows;
+        public IList<MdsRowViewModel> RealMdsRows;
         #endregion
 
 
@@ -303,16 +303,16 @@ namespace GraphLabs.Tasks.ExternalStability
                         throw new InvalidCastException("Входной граф должен быть неориентированным.", ex);
                     }
 
-                    SccRows = new ObservableCollection<SccRowViewModel>();
-                    SetDES = new ObservableCollection<Vertex>();
+                    MdsRows = new ObservableCollection<MdsRowViewModel>();
+                    DomSet = new ObservableCollection<Vertex>();
                     IsMouseVerticesMovingEnabled = true;
                     var minDsCount = new MinDSEvaluator(GivenGraph);
                     minDsCount.Evaluate(GivenGraph, true);
-                    RealSccRows = new List<SccRowViewModel>();
+                    RealMdsRows = new List<MdsRowViewModel>();
                     foreach (var minDs in minDsCount.MinDs)
                     {
-                        var tempScc = new SccRowViewModel(minDs);
-                        RealSccRows.Add(tempScc);
+                        var tempScc = new MdsRowViewModel(minDs);
+                        RealMdsRows.Add(tempScc);
                     }
                     var minimalDsCount = new MinDSEvaluator(GivenGraph);
                     minimalDsCount.Evaluate(GivenGraph, false);
@@ -438,13 +438,13 @@ namespace GraphLabs.Tasks.ExternalStability
             
 
             // Если вершину уже добавили - то удаляем.
-            if (SetDES.Contains(vertex))
+            if (DomSet.Contains(vertex))
             {
                 VertVisCol[Convert.ToInt32(vertex.Name)].Background = new SolidColorBrush(_defaultBackgroundColor);
                 Matrix[Convert.ToInt32(vertex.Name)].Background = new SolidColorBrush(Color.FromArgb(250, 239, 240, 250));
                 VertVisCol[Convert.ToInt32(vertex.Name)].BorderBrush = new SolidColorBrush(_defaultBorderColor);
                 
-                SetDES.Remove(vertex);
+                DomSet.Remove(vertex);
 
                 foreach (var edge in EdgeVisCol)
                 {
@@ -452,7 +452,7 @@ namespace GraphLabs.Tasks.ExternalStability
                         edge.Stroke = new SolidColorBrush(_defaultBorderColor);
                 }
 
-                foreach (var vert in SetDES)
+                foreach (var vert in DomSet)
                 {
                     foreach (var edge in EdgeVisCol)
                     {
@@ -464,7 +464,7 @@ namespace GraphLabs.Tasks.ExternalStability
 
             }
 
-            SetDES.Add(vertex);
+            DomSet.Add(vertex);
             Matrix[Convert.ToInt32(vertex.Name)].Background = new SolidColorBrush(Color.FromArgb(250, 230, 207, 207));
 
             VertVisCol[Convert.ToInt32(vertex.Name)].Background = new SolidColorBrush(Color.FromArgb(250, 230, 207, 207));
@@ -488,9 +488,9 @@ namespace GraphLabs.Tasks.ExternalStability
         {
             var isAdded = false;
             var setChecker = new CheckSet();
-            bool isExternal = setChecker.IsExternalStability(SetDES, GivenGraph);
-            var sccStr = new SccRowViewModel(SetDES);
-            var isMinimal = setChecker.IsMinimal(SetDES, GivenGraph);
+            bool isExternal = setChecker.IsExternalStability(DomSet, GivenGraph);
+            var sccStr = new MdsRowViewModel(DomSet);
+            var isMinimal = setChecker.IsMinimal(DomSet, GivenGraph);
             if (isExternal)
             {
                 if (isMinimal)
@@ -511,7 +511,7 @@ namespace GraphLabs.Tasks.ExternalStability
                             UserActionsManager.Score));
                     }
                     //Поиск выбранного множества в списке всех множеств ???
-                    foreach (var sccRow in SccRows)
+                    foreach (var sccRow in MdsRows)
                     {
                         if (sccRow.VerticesView == sccStr.VerticesView)
                         {
@@ -535,11 +535,11 @@ namespace GraphLabs.Tasks.ExternalStability
                     }
                     else
                     {
-                        SccRows.Add(sccStr);
+                        MdsRows.Add(sccStr);
                     }
 
                     //Очищаем текущее множество выбранных вершин
-                    SetDES.Clear();
+                    DomSet.Clear();
 
                     //Визуальное изменение выбранных элементов
                     foreach (var vertex in VertVisCol)
@@ -587,16 +587,16 @@ namespace GraphLabs.Tasks.ExternalStability
         {
  
             var numofChosen = 0;
-            foreach (var sccRow in SccRows)
+            foreach (var sccRow in MdsRows)
             {
                 if (sccRow.IsBuilt)
                 {
                     numofChosen++;
                 }
             }
-            foreach (var realSccRow in RealSccRows)
+            foreach (var realSccRow in RealMdsRows)
             {   
-                foreach (var sccRow in SccRows)
+                foreach (var sccRow in MdsRows)
                 {
                     if (sccRow.IsBuilt)
                     {
@@ -620,7 +620,7 @@ namespace GraphLabs.Tasks.ExternalStability
             var k = "";
             var numOfBuilt = 0;
             var m = 0;
-            foreach (var realSccRow in RealSccRows)
+            foreach (var realSccRow in RealMdsRows)
             {
                 if (realSccRow.IsBuilt)
                 {
@@ -653,8 +653,8 @@ namespace GraphLabs.Tasks.ExternalStability
                 }
                 MessageBox.Show("Неправильно выбраны множества. Повторите выполнение 2 и 3 заданий.");
                 _task = Task.TaskSelectDomSets;
-                SccRows = new ObservableCollection<SccRowViewModel>();
-                SetDES = new ObservableCollection<Vertex>();
+                MdsRows = new ObservableCollection<MdsRowViewModel>();
+                DomSet = new ObservableCollection<Vertex>();
                 _countOfSes = _dsCount;
             }
             else
@@ -667,8 +667,8 @@ namespace GraphLabs.Tasks.ExternalStability
                 }
                 MessageBox.Show("Неправильно выбраны множества. Повторите выполнение 2 и 3 заданий.");
                 _task = Task.TaskSelectDomSets;
-                SccRows = new ObservableCollection<SccRowViewModel>();
-                SetDES = new ObservableCollection<Vertex>();
+                MdsRows = new ObservableCollection<MdsRowViewModel>();
+                DomSet = new ObservableCollection<Vertex>();
                 _countOfSes = _dsCount;
             }
         }
