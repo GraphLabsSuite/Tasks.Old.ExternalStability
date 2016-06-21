@@ -83,7 +83,7 @@ namespace GraphLabs.Tasks.ExternalStability
         }
 
         private const string SccNameDelimiter = ", ";     
-        private static string BuildSccName(IEnumerable<Vertex> vertices)
+        private static string BuildMdsName(IEnumerable<Vertex> vertices)
         {
             string str = " {" + string.Join(SccNameDelimiter, vertices.Select(v => v.Name).OrderBy(s => s))  + "}";
             return str;
@@ -94,7 +94,7 @@ namespace GraphLabs.Tasks.ExternalStability
         {
             Number = ++_count;
             VerticesSet = new List<Vertex>(vertices);
-            VerticesView = BuildSccName(vertices);
+            VerticesView = BuildMdsName(vertices);
             IsBuilt = false;
         }
 
@@ -103,7 +103,7 @@ namespace GraphLabs.Tasks.ExternalStability
         {
             if (flag) Number = ++_count;
             VerticesSet = new List<Vertex>(vertices);
-            VerticesView = BuildSccName(vertices);
+            VerticesView = BuildMdsName(vertices);
             IsBuilt = false;
         }
 

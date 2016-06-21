@@ -484,7 +484,7 @@ namespace GraphLabs.Tasks.ExternalStability
         /// Проверка выбранного множества вершин на соответствие множеству внешней устойчивости
         /// </summary>
         /// <returns></returns>
-        private bool ValudateSet()
+        private bool ValidateSet()
         {
             var isAdded = false;
             var setChecker = new CheckSet();

@@ -132,7 +132,7 @@ namespace GraphLabs.Tasks.ExternalStability
                 () =>
                 {
                     if (_task == Task.TaskSelectDomSets)
-                    ValudateSet();
+                    ValidateSet();
                 },
                 () => _state == State.Nothing
                 )
