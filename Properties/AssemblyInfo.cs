@@ -5,8 +5,8 @@ using System.Runtime.InteropServices;
 // Управление общими сведениями о сборке осуществляется с помощью 
 // набора атрибутов. Измените значения этих атрибутов для изменения сведений,
 // связанных со сборкой.
-[assembly: AssemblyTitle("Шаблон задания")]
-[assembly: AssemblyDescription("Ключевые слова, через запятую")]
+[assembly: AssemblyTitle("Изоморфизм")]
+[assembly: AssemblyDescription("Изоморфизм")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("GraphLabs")]
@@ -29,4 +29,4 @@ using System.Runtime.InteropServices;
 // Можно задать все значения или принять номер построения и номер редакции по умолчанию, 
 // с помощью знака "*", как показано ниже:
 // [assembly: AssemblyVersion("1.0.0.*")]
-[assembly: AssemblyVersion("1.0.0000.*")]
+[assembly: AssemblyVersion("1.1.0000.*")]
