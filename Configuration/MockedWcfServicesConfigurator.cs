@@ -22,7 +22,7 @@ namespace GraphLabs.Tasks.ExternalStability.Configuration
             //debugGraph.AddEdge(new UndirectedEdge(debugGraph.Vertices[4], debugGraph.Vertices[3]));
             debugGraph.AddEdge(new UndirectedEdge(debugGraph.Vertices[5], debugGraph.Vertices[6]));
             debugGraph.AddEdge(new UndirectedEdge(debugGraph.Vertices[6], debugGraph.Vertices[4]));
-            var serializedGraph = GraphSerializer.Serialize(debugGraph);
+            var serializedGraph = VariantSerializer.Serialize(new IGraph[] { debugGraph });
 
             return new TaskVariantDto
             {

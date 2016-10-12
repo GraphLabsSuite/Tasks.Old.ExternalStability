@@ -296,7 +296,7 @@ namespace GraphLabs.Tasks.ExternalStability
                 {
                     try
                     {
-                        GivenGraph = (UndirectedGraph) GraphSerializer.Deserialize(e.Data);
+                        GivenGraph = (UndirectedGraph) VariantSerializer.Deserialize(e.Data)[0];
                     }
                     catch (InvalidCastException ex)
                     {
