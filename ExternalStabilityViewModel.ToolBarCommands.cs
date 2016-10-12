@@ -116,7 +116,6 @@ namespace GraphLabs.Tasks.ExternalStability
                             break;
                         case Task.TaskEnd:
                             UserActionsManager.ReportThatTaskFinished();
-                            TransferToNextTask();
                             break;
                     }
                 },
