@@ -8,7 +8,7 @@ using System.Linq;
 
 namespace GraphLabs.Tasks.ExternalStability
 {
-    /// <summary> ViewModel КСС для отображения на панели при построении конденсата </summary>
+    /// <summary> ViewModel для отображения на панели МВУ </summary>
     public class MdsRowViewModel : DependencyObject
     {
         /// <summary> № </summary>
@@ -78,7 +78,7 @@ namespace GraphLabs.Tasks.ExternalStability
         {
             this.VerticesSet = prototype.VerticesSet;
             this.IsBuilt = prototype.IsBuilt;
-            this.Number = prototype.Number;
+            this.Number = ++_count;
             this.VerticesView = prototype.VerticesView;
         }
 
@@ -90,7 +90,16 @@ namespace GraphLabs.Tasks.ExternalStability
          }
 
     /// <summary> Ctor. </summary>
-    public MdsRowViewModel(IList<Vertex> vertices)
+    public MdsRowViewModel(IList<Vertex> vertices, int count)
+        {
+            Number = count;
+            VerticesSet = new List<Vertex>(vertices);
+            VerticesView = BuildMdsName(vertices);
+            IsBuilt = false;
+        }
+
+        /// <summary> Ctor. </summary>
+   public MdsRowViewModel(IList<Vertex> vertices)
         {
             Number = ++_count;
             VerticesSet = new List<Vertex>(vertices);
@@ -99,7 +108,7 @@ namespace GraphLabs.Tasks.ExternalStability
         }
 
         /// <summary> Ctor. </summary>
-    public MdsRowViewModel(IList<Vertex> vertices, bool flag)
+        public MdsRowViewModel(IList<Vertex> vertices, bool flag)
         {
             if (flag) Number = ++_count;
             VerticesSet = new List<Vertex>(vertices);

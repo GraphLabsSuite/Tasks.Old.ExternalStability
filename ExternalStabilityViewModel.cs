@@ -489,27 +489,12 @@ namespace GraphLabs.Tasks.ExternalStability
             var isAdded = false;
             var setChecker = new CheckSet();
             bool isExternal = setChecker.IsExternalStability(DomSet, GivenGraph);
-            var sccStr = new MdsRowViewModel(DomSet);
+            var sccStr = new MdsRowViewModel(DomSet, _dsCount - _countOfSes + 1);
             var isMinimal = setChecker.IsMinimal(DomSet, GivenGraph);
             if (isExternal)
             {
                 if (isMinimal)
                 {
-                    --_countOfSes;
-                    //Выбрано достаточное количество множеств внешней устойчивости
-                    if (_countOfSes == 0)
-                    {
-                        MessageBox.Show("Задание 2 пройдено.\n Вы перешли к заданию 3.\n Ознакомьтесь со справкой.<?>");
-                        _task = Task.TaskFindMinDomSets;
-                    }
-                    if (UserActionsManager.Score > _countOfSes)
-                        UserActionsManager.RegisterInfo(string.Format(@"Множество добавлено. Осталось {0} множеств(о).",
-                            _countOfSes));
-                    else if (UserActionsManager.Score > 0)
-                    {
-                        UserActionsManager.RegisterInfo(string.Format(@"Множество добавлено. Осталось {0} множеств(о).",
-                            UserActionsManager.Score));
-                    }
                     //Поиск выбранного множества в списке всех множеств ???
                     foreach (var sccRow in MdsRows)
                     {
@@ -523,7 +508,6 @@ namespace GraphLabs.Tasks.ExternalStability
                     //Проверка на уже добавленность выбранного множества
                     if (isAdded)
                     {
-                        _countOfSes++;
                         MessageBox.Show("Множество " + sccStr.VerticesView + " уже добавлено.");
                         if (UserActionsManager.Score > 2)
                             UserActionsManager.RegisterMistake("Множество " + sccStr.VerticesView + " уже добавлено.", 2);
@@ -536,6 +520,21 @@ namespace GraphLabs.Tasks.ExternalStability
                     else
                     {
                         MdsRows.Add(sccStr);
+                        --_countOfSes;
+                        //Выбрано достаточное количество множеств внешней устойчивости
+                        if (_countOfSes == 0)
+                        {
+                            MessageBox.Show("Задание 2 пройдено.\n Вы перешли к заданию 3.\n Ознакомьтесь со справкой.<?>");
+                            _task = Task.TaskFindMinDomSets;
+                        }
+                        if (UserActionsManager.Score > _countOfSes)
+                            UserActionsManager.RegisterInfo(string.Format(@"Множество добавлено. Осталось {0} множеств(о).",
+                                _countOfSes));
+                        else if (UserActionsManager.Score > 0)
+                        {
+                            UserActionsManager.RegisterInfo(string.Format(@"Множество добавлено. Осталось {0} множеств(о).",
+                                UserActionsManager.Score));
+                        }
                     }
 
                     //Очищаем текущее множество выбранных вершин
