@@ -641,34 +641,27 @@ namespace GraphLabs.Tasks.ExternalStability
             {
                 MessageBox.Show("Задание выполнено. Нажмите ещё раз кнопку ОК для выхода.");
                 _task = Task.TaskEnd;
+                UserActionsManager.ReportThatTaskFinished();
             }
             else if (!flag2)
             {
-                k = "Выбранные множества не являются минимальными. Количество множеств не совпадает";
+                k = "Выбранные множества не являются минимальными.";
                 if (UserActionsManager.Score > 5) UserActionsManager.RegisterMistake(k, 5);
                 else if (UserActionsManager.Score > 0)
                 {
                     UserActionsManager.RegisterMistake(k, (short) UserActionsManager.Score);
                 }
-                MessageBox.Show("Неправильно выбраны множества. Повторите выполнение 2 и 3 заданий.");
-                _task = Task.TaskSelectDomSets;
-                MdsRows = new ObservableCollection<MdsRowViewModel>();
-                DomSet = new ObservableCollection<Vertex>();
-                _countOfSes = _dsCount;
+                MessageBox.Show("Неправильно выбраны множества. Повторите выполнение 3 задания.");
             }
             else
             {
-                k = "Выбранные множества не являются минимальными. Выбраны не все множества";
+                k = "Выбраны не все множества.";
                 if (UserActionsManager.Score > m) UserActionsManager.RegisterMistake(k, (short) m);
                 else if (UserActionsManager.Score > 0)
                 {
                     UserActionsManager.RegisterMistake(k, (short) UserActionsManager.Score);
                 }
-                MessageBox.Show("Неправильно выбраны множества. Повторите выполнение 2 и 3 заданий.");
-                _task = Task.TaskSelectDomSets;
-                MdsRows = new ObservableCollection<MdsRowViewModel>();
-                DomSet = new ObservableCollection<Vertex>();
-                _countOfSes = _dsCount;
+                MessageBox.Show("Неправильно выбраны множества. Повторите выполнение 3 задания.");
             }
         }
     }
