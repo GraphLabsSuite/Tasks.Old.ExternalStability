@@ -112,7 +112,8 @@ namespace GraphLabs.Tasks.ExternalStability
             SetBinding(OnLoadedCommandProperty, new Binding("OnLoadedCmd"));
             SetBinding(VertVisProperty, new Binding("VertVisCol") { Mode = BindingMode.TwoWay });
             SetBinding(EdgeVisProperty, new Binding("EdgeVisCol") { Mode = BindingMode.TwoWay });
-            
+
+            Matrix.Values = new [] {"0", "1"};
         }
 
 
