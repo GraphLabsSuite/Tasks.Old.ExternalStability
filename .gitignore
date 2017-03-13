@@ -1,0 +1,11 @@
+/.vs
+/[Pp]ackages
+
+*.user
+
+[Oo]bj
+[Bb]in
+
+/GraphLabs.Tasks.ExternalStability/Debug
+
+/AssemblyVersion.cs
