@@ -476,7 +476,7 @@ namespace GraphLabs.Tasks.ExternalStability
                     edge.Stroke = new SolidColorBrush(Color.FromArgb(255,243,117,117));
             }
 
-            UserActionsManager.RegisterInfo(string.Format("Выбрана вершина: {0}", clickedVertex.Name));
+            //UserActionsManager.RegisterInfo(string.Format("Выбрана вершина: {0}", clickedVertex.Name));
         }
 
 
@@ -491,6 +491,8 @@ namespace GraphLabs.Tasks.ExternalStability
             bool isExternal = setChecker.IsExternalStability(DomSet, GivenGraph);
             var sccStr = new MdsRowViewModel(DomSet, _dsCount - _countOfSes + 1);
             var isMinimal = setChecker.IsMinimal(DomSet, GivenGraph);
+            // какое множество проверяем
+            UserActionsManager.RegisterInfo("Внешняя устойчивость. Задание 2. На проверку отправлено множество: " + sccStr.VerticesView);
             if (isExternal)
             {
                 if (isMinimal)
@@ -593,6 +595,8 @@ namespace GraphLabs.Tasks.ExternalStability
                     numofChosen++;
                 }
             }
+            // мощность выбранного множества
+            UserActionsManager.RegisterInfo("Внешняя устойчивость. Задание 3. Мощность выбранного множества: " + numofChosen);
             foreach (var realSccRow in RealMdsRows)
             {   
                 foreach (var sccRow in MdsRows)
