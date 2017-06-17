@@ -1,19 +1,23 @@
 ﻿using System;
-using System.Collections.ObjectModel;
-using System.Windows.Controls;
-using System.Windows.Media.Imaging;
-using Autofac.Core;
-using GraphLabs.CommonUI;
-using GraphLabs.CommonUI.Controls.ViewModels;
-using GraphLabs.Graphs;
-using GraphLabs.Utils;
+using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Media.Imaging;
+using Castle.Components.DictionaryAdapter;
+using GraphLabs.Common;
+using GraphLabs.CommonUI.Controls;
+using GraphLabs.CommonUI.Controls.ViewModels;
+using GraphLabs.Graphs;
+using GraphLabs.Utils;
 
 
 using Vertex = GraphLabs.Graphs.Vertex;
+using GraphLabs.CommonUI;
+using GraphLabs.CommonUI.Controls.ViewModels.Matrix;
 
 namespace GraphLabs.Tasks.ExternalStability
 {
@@ -93,27 +97,22 @@ namespace GraphLabs.Tasks.ExternalStability
                 )
             {
                 Image = new BitmapImage(GetImageUri("help.png")),
-                Description = "справка"
+                Description = "Справка"
             };
 
             // Проверка задания
             var checkButton = new ToolBarInstantCommand(
                 () =>
                 {
-                    // преобразовываем матрицу в строку
-                    var rows = new string[7];
-                    for (var i = 0; i < 7; i++) rows[i] = $"({string.Join(", ", Matrix[i]).Remove(0, 3)})";
-                    var matrix = $"({string.Join("; ", rows)})";
-                    // регистрируем отправленную на проверку матрицу
-                    
+                    var mp = new MatrixPrinter();
                     switch (_task)
                     {
                         case Task.TaskAdjacencyMatrix:
-                            UserActionsManager.RegisterInfo("Внешняя устойчивость. Задание 1.1. На проверку отправлена матрица: " + matrix);
+                            UserActionsManager.RegisterInfo("Внешняя устойчивость. Задание 1.1. На проверку отправлена матрица: " + mp.MatrixToString(Matrix));
                             CheckMatrix();
                             break;
                         case Task.TaskModifiedAdjMatrix:
-                            UserActionsManager.RegisterInfo("Внешняя устойчивость. Задание 1.2. На проверку отправлена матрица: " + matrix);
+                            UserActionsManager.RegisterInfo("Внешняя устойчивость. Задание 1.2. На проверку отправлена матрица: " + mp.MatrixToString(Matrix));
                             CheckMatrixforAghorithm();
                             break;
                         case Task.TaskSelectDomSets:

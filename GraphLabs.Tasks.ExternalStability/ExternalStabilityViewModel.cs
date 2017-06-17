@@ -9,10 +9,11 @@ using System.Windows.Input;
 using System.Windows.Media;
 using GraphLabs.Common;
 using GraphLabs.CommonUI;
-using GraphLabs.CommonUI.Controls.ViewModels;
 using GraphLabs.Graphs;
 using GraphLabs.Graphs.DataTransferObjects.Converters;
 using GraphLabs.Common.Utils;
+using GraphLabs.CommonUI.Controls.ViewModels.Matrix;
+using GraphLabs.CommonUI.Controls.ViewModels;
 
 namespace GraphLabs.Tasks.ExternalStability
 {
@@ -171,14 +172,14 @@ namespace GraphLabs.Tasks.ExternalStability
         /// <summary> Заполняемая студентом матрица </summary>
         public static readonly DependencyProperty MatrixProperty = DependencyProperty.Register(
             nameof(Matrix),
-            typeof(ObservableCollection<MatrixRowViewModel<string>>),
+            typeof(ObservableCollection<CommonUI.Controls.ViewModels.MatrixRowViewModel<string>>),
             typeof(ExternalStabilityViewModel),
-            new PropertyMetadata(default(ObservableCollection<MatrixRowViewModel<string>>)));
+            new PropertyMetadata(default(ObservableCollection<CommonUI.Controls.ViewModels.MatrixRowViewModel<string>>)));
 
         /// <summary> Заполняемая студентом матрица </summary>
-        public ObservableCollection<MatrixRowViewModel<string>> Matrix
+        public ObservableCollection<CommonUI.Controls.ViewModels.MatrixRowViewModel<string>> Matrix
         {
-            get { return (ObservableCollection<MatrixRowViewModel<string>>)GetValue(MatrixProperty); }
+            get { return (ObservableCollection<CommonUI.Controls.ViewModels.MatrixRowViewModel<string>>)GetValue(MatrixProperty); }
             set { SetValue(MatrixProperty, value); }
         }
         
@@ -325,7 +326,7 @@ namespace GraphLabs.Tasks.ExternalStability
                     _dsCount = tempCount - 1;
                     _countOfSes = _dsCount;
 
-                    var matrix = new ObservableCollection<MatrixRowViewModel<string>>();
+                    var matrix = new ObservableCollection<CommonUI.Controls.ViewModels.MatrixRowViewModel<string>>();
                     for (var i = 0; i < GivenGraph.VerticesCount; ++i)
                     {
                         var row = new ObservableCollection<string> {i.ToString()};
@@ -333,7 +334,7 @@ namespace GraphLabs.Tasks.ExternalStability
                             row.Add("0");
 
                         row.CollectionChanged += RowChanged;
-                        matrix.Add(new MatrixRowViewModel<string>(row));
+                        matrix.Add(new CommonUI.Controls.ViewModels.MatrixRowViewModel<string>(row));
                     }
                     Matrix = matrix;
                 });
@@ -384,6 +385,7 @@ namespace GraphLabs.Tasks.ExternalStability
             }
             else
             {
+                UserActionsManager.RegisterInfo("Внешняя устойчивость. Задание выполнено, переход к следующему заданию");
                 MessageBox.Show("Задание 1.1 пройдено.\n Вы перешли к заданию 1.2.\n Ознакомьтесь со справкой.<?>");
                 _task = Task.TaskModifiedAdjMatrix;
             }
@@ -526,6 +528,7 @@ namespace GraphLabs.Tasks.ExternalStability
                         //Выбрано достаточное количество множеств внешней устойчивости
                         if (_countOfSes == 0)
                         {
+                            UserActionsManager.RegisterInfo("Внешняя устойчивость. Задание 2 завершено. ");
                             MessageBox.Show("Задание 2 пройдено.\n Вы перешли к заданию 3.\n Ознакомьтесь со справкой.<?>");
                             _task = Task.TaskFindMinDomSets;
                         }
@@ -596,7 +599,6 @@ namespace GraphLabs.Tasks.ExternalStability
                 }
             }
             // мощность выбранного множества
-            UserActionsManager.RegisterInfo("Внешняя устойчивость. Задание 3. Мощность выбранного множества: " + numofChosen);
             foreach (var realSccRow in RealMdsRows)
             {   
                 foreach (var sccRow in MdsRows)
@@ -618,6 +620,7 @@ namespace GraphLabs.Tasks.ExternalStability
                     }
                 }
             }
+            
             var flag = true;
             var flag2 = true;
             var k = "";
@@ -640,16 +643,17 @@ namespace GraphLabs.Tasks.ExternalStability
             {
                 flag2 = false;
             }
-
+            
             if (flag && flag2)
             {
+                UserActionsManager.RegisterInfo("Внешняя устойчивость.Задание 3. Задание выполнено");
                 MessageBox.Show("Задание выполнено. Нажмите ещё раз кнопку ОК для выхода.");
                 _task = Task.TaskEnd;
                 UserActionsManager.ReportThatTaskFinished();
             }
             else if (!flag2)
             {
-                k = "Выбранные множества не являются минимальными.";
+                k = "Внешняя устойчивость. Задание 3. Выбранные множества не являются минимальными.";
                 if (UserActionsManager.Score > 5) UserActionsManager.RegisterMistake(k, 5);
                 else if (UserActionsManager.Score > 0)
                 {
@@ -659,7 +663,7 @@ namespace GraphLabs.Tasks.ExternalStability
             }
             else
             {
-                k = "Выбраны не все множества.";
+                k = "Внешняя устойчивость. Задание 3. Выбраны не все множества.";
                 if (UserActionsManager.Score > m) UserActionsManager.RegisterMistake(k, (short) m);
                 else if (UserActionsManager.Score > 0)
                 {

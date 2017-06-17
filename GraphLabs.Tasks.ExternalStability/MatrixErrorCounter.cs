@@ -1,23 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Collections.Specialized;
-using System.ComponentModel;
-using System.Linq;
-using System.Security;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Input;
-using System.Windows.Media;
-using GraphLabs.Common;
-using GraphLabs.Common.UserActionsRegistrator;
-using GraphLabs.CommonUI;
-using GraphLabs.CommonUI.Controls.ViewModels;
+﻿using System.Collections.ObjectModel;
 using GraphLabs.Graphs;
-using GraphLabs.Graphs.DataTransferObjects.Converters;
-using GraphLabs.Utils;
-using GraphLabs.Utils.Services;
-using GraphLabs.Common.Utils;
+using GraphLabs.CommonUI.Controls.ViewModels;
 
 namespace GraphLabs.Tasks.ExternalStability
 {
