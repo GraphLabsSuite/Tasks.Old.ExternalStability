@@ -105,14 +105,16 @@ namespace GraphLabs.Tasks.ExternalStability
                 () =>
                 {
                     var mp = new MatrixPrinter();
+                    var m = Matrix;
+                    m.Skip(1);
                     switch (_task)
                     {
                         case Task.TaskAdjacencyMatrix:
-                            UserActionsManager.RegisterInfo("Внешняя устойчивость. Задание 1.1. На проверку отправлена матрица: " + mp.MatrixToString(Matrix));
+                            UserActionsManager.RegisterInfo("Внешняя устойчивость. Задание 1.1. На проверку отправлена матрица: " + mp.MatrixToString(m));
                             CheckMatrix();
                             break;
                         case Task.TaskModifiedAdjMatrix:
-                            UserActionsManager.RegisterInfo("Внешняя устойчивость. Задание 1.2. На проверку отправлена матрица: " + mp.MatrixToString(Matrix));
+                            UserActionsManager.RegisterInfo("Внешняя устойчивость. Задание 1.2. На проверку отправлена матрица: " + mp.MatrixToString(m));
                             CheckMatrixforAghorithm();
                             break;
                         case Task.TaskSelectDomSets:
