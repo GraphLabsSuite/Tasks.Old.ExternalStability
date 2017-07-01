@@ -106,7 +106,6 @@ namespace GraphLabs.Tasks.ExternalStability
                 {
                     var mp = new MatrixPrinter();
                     var m = Matrix;
-                    m.Skip(1);
                     switch (_task)
                     {
                         case Task.TaskAdjacencyMatrix:
@@ -172,9 +171,6 @@ namespace GraphLabs.Tasks.ExternalStability
             ToolBarCommands.Add(addSetofES);
             ToolBarCommands.Add(helpM);
             //ToolBarCommands.Add(debugButton);
-
-
-
         }
     }
 }
