@@ -1,18 +1,23 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
+using System.Linq;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Imaging;
-using Autofac.Core;
-using GraphLabs.CommonUI;
+using Castle.Components.DictionaryAdapter;
+using GraphLabs.Common;
+using GraphLabs.CommonUI.Controls;
 using GraphLabs.CommonUI.Controls.ViewModels;
 using GraphLabs.Graphs;
 using GraphLabs.Utils;
-using System.Collections.Generic;
-using System.Linq;
-using System.Windows;
 
 
 using Vertex = GraphLabs.Graphs.Vertex;
+using GraphLabs.CommonUI;
+using GraphLabs.CommonUI.Controls.ViewModels.Matrix;
 
 namespace GraphLabs.Tasks.ExternalStability
 {
@@ -92,19 +97,23 @@ namespace GraphLabs.Tasks.ExternalStability
                 )
             {
                 Image = new BitmapImage(GetImageUri("help.png")),
-                Description = "справка"
+                Description = "Справка"
             };
 
             // Проверка задания
             var checkButton = new ToolBarInstantCommand(
                 () =>
                 {
+                    var mp = new MatrixPrinter();
+                    var m = Matrix;
                     switch (_task)
                     {
                         case Task.TaskAdjacencyMatrix:
+                            UserActionsManager.RegisterInfo("Внешняя устойчивость. Задание 1.1. На проверку отправлена матрица: " + mp.MatrixToString(m));
                             CheckMatrix();
                             break;
                         case Task.TaskModifiedAdjMatrix:
+                            UserActionsManager.RegisterInfo("Внешняя устойчивость. Задание 1.2. На проверку отправлена матрица: " + mp.MatrixToString(m));
                             CheckMatrixforAghorithm();
                             break;
                         case Task.TaskSelectDomSets:
@@ -162,9 +171,6 @@ namespace GraphLabs.Tasks.ExternalStability
             ToolBarCommands.Add(addSetofES);
             ToolBarCommands.Add(helpM);
             //ToolBarCommands.Add(debugButton);
-
-
-
         }
     }
 }
